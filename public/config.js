@@ -18,7 +18,7 @@ module.exports = Object.assign({
     title: 'RMS',
     description: 'University of Waterloo\'s Campus Response Team Shift Scheduling System',
     head: {
-      titleTemplate: 'RMS: %s',
+      titleTemplate: 'RMS | %s',
       meta: [
         {name: 'description', content: 'All the modern best practices in one example.'},
         {charset: 'utf-8'},
@@ -35,5 +35,17 @@ module.exports = Object.assign({
       ]
     }
   },
-
+  cas: {
+    base_url: process.env.CAS_URL || 'https://cas.uwaterloo.ca/cas',
+    version: process.env.CAS_VERSION || 2.0
+  },
+  database: process.env.CONNECTION_STRING || {
+    user: process.env.DATABASE_USER || 'developer',
+    password: process.env.DATABASE_PASSWORD || 'developer',
+    host: process.env.DATABASE_HOST || 'localhost',
+    port: process.env.DATABASE_PORT || 5432,
+    database: process.env.DATABASE_NAME || 'rms',
+    ssl: process.env.DATABASE_SECURE || false
+  },
+  signing_key: process.env.SIGNING_KEY || 'developer',
 }, environment);

@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import config from '../public/config';
@@ -10,11 +11,12 @@ const pretty = new PrettyError();
 const app = express();
 
 app.use(session({
-  secret: 'react and redux rule!!!!',
+  secret: config.signing_key,
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 60000 }
 }));
+app.use(cors());
 app.use(bodyParser.json());
 
 
@@ -24,7 +26,7 @@ app.use((req, res) => {
   const {action, params} = mapUrl(actions, splittedUrlPath);
 
   if (action) {
-    action(req, params)
+    action(req, res, params)
       .then((result) => {
         if (result instanceof Function) {
           result(res);

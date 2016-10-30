@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Nav, Navbar, NavItem, NavDropdown } from 'react-bootstrap';
 import Helmet from 'react-helmet';
 import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
-import { isLoaded as isAuthLoaded, load as loadAuth, logout } from 'redux/modules/auth';
+import { isLoaded as isAuthLoaded, load as loadAuth, login, logout } from 'redux/modules/auth';
 import { InfoBar } from 'components';
 import { push } from 'react-router-redux';
 import config from '../../config';
@@ -27,11 +27,12 @@ import { asyncConnect } from 'redux-async-connect';
 }])
 @connect(
   state => ({user: state.auth.user}),
-  {logout, pushState: push})
+  {login, logout, pushState: push})
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
     user: PropTypes.object,
+    login: PropTypes.func.isRequired,
     logout: PropTypes.func.isRequired,
     pushState: PropTypes.func.isRequired
   };
@@ -48,6 +49,11 @@ export default class App extends Component {
       // logout
       this.props.pushState('/');
     }
+  }
+
+  handleLogin = (event) => {
+    event.preventDefault();
+    this.props.login();
   }
 
   handleLogout = (event) => {
@@ -91,18 +97,22 @@ export default class App extends Component {
             </Nav>
             <Nav navbar pullRight>
               {!user &&
+              <NavItem eventKey={5} className="login-link" onClick={this.handleLogin}>
+                CAS Login
+              </NavItem>}
+              {!user &&
               <LinkContainer to="/login">
-                <NavItem eventKey={5}>Login</NavItem>
+                <NavItem eventKey={6}>Login</NavItem>
               </LinkContainer>}
               {user &&
-              <NavDropdown eventKey={6} title={'Logged in as ' + user.name} id="user-dropdown">
+              <NavDropdown eventKey={7} title={'Logged in as ' + user.name} id="user-dropdown">
                 <LinkContainer to="/profile">
-                  <NavItem eventKey={6.1} className="profile-link">
+                  <NavItem eventKey={7.1} className="profile-link">
                     Profile
                   </NavItem>
                 </LinkContainer>
                 <LinkContainer to="/logout">
-                  <NavItem eventKey={6.2} className="logout-link" onClick={this.handleLogout}>
+                  <NavItem eventKey={7.2} className="logout-link" onClick={this.handleLogout}>
                     Logout
                   </NavItem>
                 </LinkContainer>
