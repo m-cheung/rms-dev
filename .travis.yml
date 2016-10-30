@@ -14,3 +14,7 @@ script:
   - npm run lint
   - npm test
   - npm run test-node
+
+cache:
+  directories:
+  - node_modules
