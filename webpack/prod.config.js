@@ -19,9 +19,9 @@ module.exports = {
   context: path.resolve(__dirname, '..'),
   entry: {
     'main': [
-      'bootstrap-sass!./src/theme/bootstrap.config.prod.js',
-      'font-awesome-webpack!./src/theme/font-awesome.config.prod.js',
-      './src/client.js'
+      'bootstrap-sass!./public/theme/bootstrap.config.prod.js',
+      'font-awesome-webpack!./public/theme/font-awesome.config.prod.js',
+      './public/client.js'
     ]
   },
   output: {
@@ -47,7 +47,7 @@ module.exports = {
   progress: true,
   resolve: {
     modulesDirectories: [
-      'src',
+      'public',
       'node_modules'
     ],
     extensions: ['', '.json', '.js', '.jsx']
