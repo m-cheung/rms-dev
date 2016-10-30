@@ -7,6 +7,7 @@ import auth from './auth';
 import counter from './counter';
 import {reducer as form} from 'redux-form';
 import info from './info';
+import shifts from './shifts';
 import widgets from './widgets';
 
 export default combineReducers({
@@ -14,6 +15,7 @@ export default combineReducers({
   reduxAsyncConnect,
   auth,
   form,
+  shifts,
   multireducer: multireducer({
     counter1: counter,
     counter2: counter,

@@ -34,7 +34,6 @@
       "env": {
         "NODE_PATH": "./public",
         "NODE_ENV": "production",
-        "PORT": 8080,
         "APIPORT": 3030
       }
     },
