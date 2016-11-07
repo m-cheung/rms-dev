@@ -8,5 +8,9 @@ module.exports = {
 
   logError: (procName, error) => {
     console.error('[API ERROR|' + procName + ']: ' + pretty.render(error));
+  },
+
+  logFatal: (error) => {
+    console.error('[API FATAL ERROR]: ' + pretty.render(error));
   }
 };

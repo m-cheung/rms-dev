@@ -27,11 +27,24 @@ module.exports = {
     });
   },
 
-  getShifts: (callback) => {
-    shiftsRepository.getShifts((err, result) => {
+  getShifts: (getAll, callback) => {
+    shiftsRepository.getShifts(getAll, (err, result) => {
       if (err) {
         callback({
           message: 'Unable to get shifts from the database',
+          error: err
+        });
+      } else {
+        callback(null, result);
+      }
+    });
+  },
+
+  getUserShifts: (userId, getAll, callback) => {
+    shiftsRepository.getUserShifts(userId, getAll, (err, result) => {
+      if (err) {
+        callback({
+          message: 'Unable to get shifts for user id ' + userId + ' from the database',
           error: err
         });
       } else {

@@ -17,11 +17,23 @@ module.exports = {
     dbAdaptor.executeQuery(query, params, callback);
   },
 
-  getShifts: (callback) => {
+  getShifts: (getAll, callback) => {
     const query = 'SELECT "id", "name", "start", "end" "type", "primaryId", "secondaryId", "rookieId", "description" ' +
-                  'FROM "shifts";';
+                  'FROM "shifts" ' +
+                  'WHERE "end" > CURRENT_TIMESTAMP OR $1;';
+    const params = [ getAll ];
 
-    dbAdaptor.executeQuery(query, null, callback);
+    dbAdaptor.executeQuery(query, params, callback);
+  },
+
+  getUserShifts: (userId, getAll, callback) => {
+    const query = 'SELECT "id", "name", "start", "end" "type", "description" ' +
+                  'FROM "shifts" ' +
+                  'WHERE ("primaryId"=$1 OR "secondaryId"=$1 OR "rookieId"=$1) ' +
+                    'AND ("end" > CURRENT_TIMESTAMP OR $2);';
+    const params = [ userId, getAll ];
+
+    dbAdaptor.executeQuery(query, params, callback);
   },
 
   modifyShift: (shift, callback) => {

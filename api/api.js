@@ -31,6 +31,17 @@ app.use((req, res) => {
 });
 
 
+// Catch all unhandled exceptions to prevent crash in production
+process.on('uncaughtException', (err) => {
+  logger.logFatal(err);
+
+  // Allow crash in test environment
+  if (process.env.NODE_ENV === 'test') {
+    throw err;
+  }
+});
+
+
 if (config.apiPort) {
   app.listen(config.apiPort, (err) => {
     if (err) {
