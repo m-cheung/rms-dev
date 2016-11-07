@@ -1,5 +1,5 @@
-const async = require('async');
 const config = require('../../public/config');
+const logger = require('./logger');
 const Pool = require('pg-pool');
 const url = require('url');
 
@@ -20,36 +20,18 @@ const dbProps = process.env.CONNECTION_STRING ? parseDBUrl() : config.database;
 const pool = new Pool(dbProps);
 
 module.exports = {
-  init: (callback) => {
-    async.waterfall([
-        // TODO: Create tables if they don't exist
-        // TODO: Database migrations
-    ], callback);
-  },
-
-  executeQuery: (query, callback) => {
-    pool.connect().then(client => {
-      client.query(query).then(result => {
+  executeQuery: (query, params, callback) => {
+    pool.connect().then((client)=> {
+      client.query(query, params).then((result) => {
         client.release();
         callback(null, result.rows);
-      }).catch(err => {
+      }).catch((err) => {
         client.release();
         callback(err);
       });
-    }).catch(err => {
-      console.error('Error trying to obtain a client from the pool. Error: ' + err);
+    }).catch((err) => {
+      logger.logError('DB Adaptor - executeQuery', err);
       callback(err);
-    });
-  },
-
-  executeQueryWithParams: (query, params, callback) => {
-    pool.connect().then(client => {
-      client.query(query, params).then(result => {
-        client.release();
-        callback(null, result.rows);
-      }).catch(err => callback(err));
-    }).catch(err => {
-      console.error('Error trying to obtain a client from the pool. Error: ' + err);
     });
   }
 };

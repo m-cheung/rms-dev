@@ -1,50 +1,36 @@
-import express from 'express';
-import cors from 'cors';
-import session from 'express-session';
 import bodyParser from 'body-parser';
+import cors from 'cors';
+import express from 'express';
 import config from '../public/config';
-import * as actions from './actions/index';
-import {mapUrl} from 'utils/url.js';
-import PrettyError from 'pretty-error';
+import logger from './utils/logger';
 
-const pretty = new PrettyError();
+import shifts from './controllers/shiftsController';
+import users from './controllers/usersController';
+
+// import * as actions from './actions/index';
+// import authority from './middleware/authority';
+
 const app = express();
 
-app.use(session({
-  secret: config.signing_key,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 60000 }
-}));
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// app.use('/login', authority.loginCheck, (req, res) => {
+//   actions.login(req).then((result) => res.json(result));
+// });
 
+app.use('/users', users);
+app.use('/shifts', shifts);
+
+
+
+// Catch all for path errors
 app.use((req, res) => {
-  const splittedUrlPath = req.url.split('?')[0].split('/').slice(1);
-
-  const {action, params} = mapUrl(actions, splittedUrlPath);
-
-  if (action) {
-    action(req, res, params)
-      .then((result) => {
-        if (result instanceof Function) {
-          result(res);
-        } else {
-          res.json(result);
-        }
-      }, (reason) => {
-        if (reason && reason.redirect) {
-          res.redirect(reason.redirect);
-        } else {
-          console.error('API ERROR:', pretty.render(reason));
-          res.status(reason.status || 500).json(reason);
-        }
-      });
-  } else {
-    res.status(404).end('NOT FOUND');
-  }
+  logger.logEvent('(404) Not Found', 'Request path ' + req.originalUrl);
+  res.status(404).end('The request resource does not exist');
 });
+
 
 if (config.apiPort) {
   app.listen(config.apiPort, (err) => {
