@@ -4,8 +4,7 @@ const GET_SHIFTS_FAIL = 'GET_SHIFTS_FAIL';
 
 const initialState = {
   loading: false,
-  loaded: false,
-  shifts: []
+  loaded: false
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -19,8 +18,8 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         loading: false,
-        loaded: false,
-        shifts: action.result
+        loaded: true,
+        data: action.result
       };
     case GET_SHIFTS_FAIL:
       return {
@@ -34,9 +33,13 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
+export function isLoaded(globalState) {
+  return globalState.shifts && globalState.shifts.loaded;
+}
+
 export function load() {
   return {
     types: [ GET_SHIFTS, GET_SHIFTS_SUCCESS, GET_SHIFTS_FAIL ],
-    promise: (client) => client.get('..')
+    promise: (client) => client.get('/shifts/')
   };
 }

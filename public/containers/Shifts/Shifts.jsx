@@ -1,45 +1,45 @@
 import React, {Component, PropTypes} from 'react';
 import Helmet from 'react-helmet';
 import {connect} from 'react-redux';
-import * as widgetActions from 'redux/modules/widgets';
-import {isLoaded, load as loadWidgets} from 'redux/modules/widgets';
+import * as shiftsActions from 'redux/modules/shifts';
+import {isLoaded, load as loadShifts} from 'redux/modules/shifts';
 import {initializeWithKey} from 'redux-form';
-import { WidgetForm } from 'components';
+// import { WidgetForm } from 'components';
 import { asyncConnect } from 'redux-async-connect';
 
 @asyncConnect([{
   deferred: true,
   promise: ({store: {dispatch, getState}}) => {
     if (!isLoaded(getState())) {
-      return dispatch(loadWidgets());
+      return dispatch(loadShifts());
     }
   }
 }])
 @connect(
   state => ({
-    widgets: state.widgets.data,
-    editing: state.widgets.editing,
-    error: state.widgets.error,
+    shifts: state.shifts.data,
+    // editing: state.widgets.editing,
+    // error: state.widgets.error,
     loading: state.widgets.loading
   }),
-  {...widgetActions, initializeWithKey })
+  {...shiftsActions, initializeWithKey })
 export default class Shifts extends Component {
   static propTypes = {
-    widgets: PropTypes.array,
+    shifts: PropTypes.array,
     error: PropTypes.string,
     loading: PropTypes.bool,
-    initializeWithKey: PropTypes.func.isRequired,
-    editing: PropTypes.object.isRequired,
+    // initializeWithKey: PropTypes.func.isRequired,
+    // editing: PropTypes.object.isRequired,
     load: PropTypes.func.isRequired,
-    editStart: PropTypes.func.isRequired
+    // editStart: PropTypes.func.isRequired
   };
 
   render() {
-    const handleEdit = (widget) => {
-      const {editStart} = this.props; // eslint-disable-line no-shadow
-      return () => editStart(String(widget.id));
-    };
-    const {widgets, error, editing, loading, load} = this.props;
+   // const handleEdit = (widget) => {
+   //   const {editStart} = this.props; // eslint-disable-line no-shadow
+   //   return () => editStart(String(widget.id));
+   // };
+    const {shifts, error, loading, load} = this.props;
     let refreshClassName = 'fa fa-refresh';
     if (loading) {
       refreshClassName += ' fa-spin';
@@ -70,30 +70,27 @@ export default class Shifts extends Component {
           {' '}
           {error}
         </div>}
-
-        // Shifts table below
-        {widgets && widgets.length &&
+        {shifts && shifts.length &&
         <table className="table table-striped">
           <thead>
           <tr>
-            <th className={styles.idCol}>ID</th>
-            <th className={styles.colorCol}>Color</th>
-            <th className={styles.sprocketsCol}>Sprockets</th>
+            <th className={styles.idCol}>Name</th>
+            <th className={styles.colorCol}>Start</th>
+            <th className={styles.sprocketsCol}>End</th>
             <th className={styles.ownerCol}>Owner</th>
             <th className={styles.buttonCol}></th>
           </tr>
           </thead>
           <tbody>
           {
-            widgets.map((widget) => editing[widget.id] ?
-              <WidgetForm formKey={String(widget.id)} key={String(widget.id)} initialValues={widget}/> :
-              <tr key={widget.id}>
-                <td className={styles.idCol}>{widget.id}</td>
-                <td className={styles.colorCol}>{widget.color}</td>
-                <td className={styles.sprocketsCol}>{widget.sprocketCount}</td>
-                <td className={styles.ownerCol}>{widget.owner}</td>
+            shifts.map((shift) =>
+              <tr key={shift.id}>
+                <td className={styles.idCol}>{shift.name}</td>
+                <td className={styles.colorCol}>{shift.start}</td>
+                <td className={styles.sprocketsCol}>{shift.end}</td>
+                <td className={styles.ownerCol}>{shift.description}</td>
                 <td className={styles.buttonCol}>
-                  <button className="btn btn-primary" onClick={handleEdit(widget)}>
+                  <button className="btn btn-primary">
                     <i className="fa fa-pencil"/> Edit
                   </button>
                 </td>
@@ -101,8 +98,6 @@ export default class Shifts extends Component {
           }
           </tbody>
         </table>}
-
-
       </div>
     );
   }

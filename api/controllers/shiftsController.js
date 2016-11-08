@@ -31,7 +31,7 @@ router.post('/add', (req, res) => {
   });
 });
 
-router.delete('/deleteShift/:shiftId', (req, res) => {
+router.delete('/delete/:shiftId', (req, res) => {
   const shiftId = req.params.shiftId;
 
   shiftsManager.deleteShift(shiftId, (err, result) => {

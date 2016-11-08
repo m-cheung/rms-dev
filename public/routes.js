@@ -41,11 +41,12 @@ export default (store) => {
 
       { /* Routes requiring login */ }
       <Route onEnter={requireLogin}>
-        <Route path="shifts" component={Shifts}/>
+
         <Route path="loginSuccess" component={LoginSuccess}/>
       </Route>
 
       { /* Routes */ }
+      <Route path="shifts" component={Shifts}/>
       <Route path="about" component={About}/>
       <Route path="login" component={Login}/>
       <Route path="survey" component={Survey}/>

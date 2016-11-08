@@ -1,5 +1,38 @@
 const dbAdaptor = require('../utils/dbAdaptor');
 
+function createTable(callback) {
+  const query = 'CREATE TABLE IF NOT EXISTS "shifts" (' +
+    '"id" serial NOT NULL,' +
+    '"name" character varying(255) NOT NULL,' +
+    '"start" timestamp with time zone NOT NULL,' +
+    '"end" timestamp with time zone NOT NULL,' +
+    '"type" integer,' +
+    '"primaryId" integer,' +
+    '"secondaryId" integer,' +
+    '"rookieId" integer,' +
+    '"description" text,' +
+    '"createdAt" timestamp with time zone NOT NULL DEFAULT now(),' +
+    '"updatedAt" timestamp with time zone NOT NULL DEFAULT now(),' +
+    'CONSTRAINT shifts_pkey PRIMARY KEY (id),' +
+    'CONSTRAINT "primaryCheck" FOREIGN KEY (primaryId) ' +
+        'REFERENCES public.users (id) MATCH SIMPLE ' +
+        'ON UPDATE NO ACTION ' +
+        'ON DELETE NO ACTION,' +
+    'CONSTRAINT "rookieCheck" FOREIGN KEY (rookieId) ' +
+        'REFERENCES public.users (id) MATCH SIMPLE ' +
+        'ON UPDATE NO ACTION ' +
+        'ON DELETE NO ACTION,' +
+    'CONSTRAINT "secondaryCheck" FOREIGN KEY (secondaryId) ' +
+        'REFERENCES public.users (id) MATCH SIMPLE ' +
+        'ON UPDATE NO ACTION ' +
+        'ON DELETE NO ACTION,' +
+    'CONSTRAINT "timeCheck" CHECK ("start" < "end")' +
+  ');';
+
+  dbAdaptor.executeQuery(query, null, callback);
+}
+
+
 module.exports = {
   addShift: (shift, callback) => {
     const { name, start, end, type, desc } = shift;
@@ -10,6 +43,8 @@ module.exports = {
     dbAdaptor.executeQuery(query, params, callback);
   },
 
+  createTable: createTable,
+
   deleteShift: (shiftId, callback) => {
     const query = 'DELETE FROM "shifts" WHERE "id"=$1;';
     const params = [ shiftId ];
@@ -18,7 +53,7 @@ module.exports = {
   },
 
   getShifts: (getAll, callback) => {
-    const query = 'SELECT "id", "name", "start", "end" "type", "primaryId", "secondaryId", "rookieId", "description" ' +
+    const query = 'SELECT "id", "name", "start", "end", "type", "primaryId", "secondaryId", "rookieId", "description" ' +
                   'FROM "shifts" ' +
                   'WHERE "end" > CURRENT_TIMESTAMP OR $1;';
     const params = [ getAll ];
@@ -27,7 +62,7 @@ module.exports = {
   },
 
   getUserShifts: (userId, getAll, callback) => {
-    const query = 'SELECT "id", "name", "start", "end" "type", "description" ' +
+    const query = 'SELECT "id", "name", "start", "end", "type", "description" ' +
                   'FROM "shifts" ' +
                   'WHERE ("primaryId"=$1 OR "secondaryId"=$1 OR "rookieId"=$1) ' +
                     'AND ("end" > CURRENT_TIMESTAMP OR $2);';
