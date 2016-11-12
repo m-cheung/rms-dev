@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import * as shiftsActions from 'redux/modules/shifts';
 import {isLoaded, load as loadShifts} from 'redux/modules/shifts';
 import {initializeWithKey} from 'redux-form';
+import { Table } from 'react-bootstrap';
 // import { WidgetForm } from 'components';
 import { asyncConnect } from 'redux-async-connect';
 
@@ -34,11 +35,21 @@ export default class Shifts extends Component {
     // editStart: PropTypes.func.isRequired
   };
 
+  shiftHeader() {
+    return (
+      <tr>
+        <td>Name</td>
+        <td>Location</td>
+      </tr>
+    );
+  }
+
   render() {
    // const handleEdit = (widget) => {
    //   const {editStart} = this.props; // eslint-disable-line no-shadow
    //   return () => editStart(String(widget.id));
    // };
+    // const _this = this;
     const {shifts, error, loading, load} = this.props;
     let refreshClassName = 'fa fa-refresh';
     if (loading) {
@@ -54,15 +65,16 @@ export default class Shifts extends Component {
           </button>
         </h1>
         <Helmet title="Shifts"/>
-        <p>
-          If you hit refresh on your browser, the data loading will take place on the server before the page is returned.
-          If you navigated here from another page, the data was fetched from the client after the route transition.
-          This uses the decorator method <code>@asyncConnect</code> with the <code>deferred: true</code> flag. To block
-          a route transition until some data is loaded, remove the <code>deffered: true</code> flag.
-          To always render before loading data, even on the server, use <code>componentDidMount</code>.
-        </p>
-        <p>
-          This widgets are stored in your session, so feel free to edit it and refresh.
+        <p>You will only be able to take shifts which you meet the criteria for. The restrictions are...</p>
+        <ul>
+          <li>You cannot take any shifts if you are suspended</li>
+          <li>You cannot take a shift that conflicts with another shift you already have</li>
+          <li>If your total hours (past + future) meet the quota you cannot take a shift until it is critical</li>
+        </ul>
+
+        <p>You can see a report of your hours and shifts by clicking "profile" in the navigation bar.</p>
+        <p>If a shift changes or is cancelled, those affected will be notified by telephone or e-mail and details will be
+          posted here within 24 hours of the shift. If you notice any errors, please contact the director of scheduling ASAP.
         </p>
         {error &&
         <div className="alert alert-danger" role="alert">
@@ -71,33 +83,35 @@ export default class Shifts extends Component {
           {error}
         </div>}
         {shifts && shifts.length &&
-        <table className="table table-striped">
+        <Table className="table table-condensed">
           <thead>
-          <tr>
-            <th className={styles.idCol}>Name</th>
-            <th className={styles.colorCol}>Start</th>
-            <th className={styles.sprocketsCol}>End</th>
-            <th className={styles.ownerCol}>Owner</th>
-            <th className={styles.buttonCol}></th>
-          </tr>
+            <tr>
+              <th className={styles.colorCol}>Name</th>
+              <th className={styles.colorCol}>Location</th>
+              <th className={styles.idCol}>Start</th>
+              <th className={styles.idCol}>End</th>
+              <th className={styles.ownerCol}>Primary</th>
+              <th className={styles.ownerCol}>Secondary</th>
+              <th className={styles.ownerCol}>Rookie</th>
+              <th className={styles.idCol}>Type</th>
+            </tr>
           </thead>
           <tbody>
-          {
-            shifts.map((shift) =>
-              <tr key={shift.id}>
-                <td className={styles.idCol}>{shift.name}</td>
-                <td className={styles.colorCol}>{shift.start}</td>
-                <td className={styles.sprocketsCol}>{shift.end}</td>
-                <td className={styles.ownerCol}>{shift.description}</td>
-                <td className={styles.buttonCol}>
-                  <button className="btn btn-primary">
-                    <i className="fa fa-pencil"/> Edit
-                  </button>
-                </td>
-              </tr>)
-          }
+            {
+              shifts.map((shift, index) =>
+                  <tr index={index}>
+                    <td>{shift.name}</td>
+                    <td>{shift.location}</td>
+                    <td>{new Date(shift.start).toString()}</td>
+                    <td>{new Date(shift.end).toString()}</td>
+                    <td>{shift.primaryId}</td>
+                    <td>{shift.secondaryId}</td>
+                    <td>{shift.rookieId}</td>
+                    <td>{shift.type}</td>
+                  </tr>)
+            }
           </tbody>
-        </table>}
+        </Table>}
       </div>
     );
   }
