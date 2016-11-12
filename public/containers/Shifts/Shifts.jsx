@@ -5,7 +5,6 @@ import * as shiftsActions from 'redux/modules/shifts';
 import {isLoaded, load as loadShifts} from 'redux/modules/shifts';
 import {initializeWithKey} from 'redux-form';
 import { Table } from 'react-bootstrap';
-// import { WidgetForm } from 'components';
 import { asyncConnect } from 'redux-async-connect';
 
 @asyncConnect([{
@@ -99,14 +98,14 @@ export default class Shifts extends Component {
           <tbody>
             {
               shifts.map((shift, index) =>
-                  <tr index={index}>
+                  <tr key={index}>
                     <td>{shift.name}</td>
                     <td>{shift.location}</td>
                     <td>{new Date(shift.start).toString()}</td>
                     <td>{new Date(shift.end).toString()}</td>
-                    <td>{shift.primaryId}</td>
-                    <td>{shift.secondaryId}</td>
-                    <td>{shift.rookieId}</td>
+                    <td>{shift.primary}</td>
+                    <td>{shift.secondary}</td>
+                    <td>{shift.rookie}</td>
                     <td>{shift.type}</td>
                   </tr>)
             }

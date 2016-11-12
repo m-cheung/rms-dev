@@ -6,9 +6,10 @@ import logger from './utils/logger';
 
 import shifts from './controllers/shiftsController';
 import users from './controllers/usersController';
+import dbManager from './managers/dbManager';
 
 // import * as actions from './actions/index';
-// import authority from './middleware/authority';
+import authority from './middleware/authority';
 
 const app = express();
 
@@ -16,9 +17,11 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// app.use('/login', authority.loginCheck, (req, res) => {
-//   actions.login(req).then((result) => res.json(result));
-// });
+app.use('/login', authority.loginCheck, (req, res) => {
+  console.log('GOT HERE');
+  res.json({});
+  //actions.login(req).then((result) => res.json(result));
+});
 
 app.use('/users', users);
 app.use('/shifts', shifts);
@@ -43,12 +46,19 @@ process.on('uncaughtException', (err) => {
 
 
 if (config.apiPort) {
-  app.listen(config.apiPort, (err) => {
+  console.info('Starting... Initializing database');
+  dbManager.initDB((err) => {
     if (err) {
-      console.error(err);
+      console.error('API is unable to start due to database initialization failure');
+    } else {
+        app.listen(config.apiPort, (err) => {
+        if (err) {
+          console.error(err);
+        }
+        console.info('----\n==> 🌎  API is running on port %s', config.apiPort);
+        console.info('==> 💻  Send requests to http://%s:%s', config.apiHost, config.apiPort);
+      });
     }
-    console.info('----\n==> 🌎  API is running on port %s', config.apiPort);
-    console.info('==> 💻  Send requests to http://%s:%s', config.apiHost, config.apiPort);
   });
 } else {
   console.error('==>     ERROR: No PORT environment variable has been specified');

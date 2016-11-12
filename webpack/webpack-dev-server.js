@@ -5,7 +5,7 @@ var config = require('../public/config');
 var webpackConfig = require('./dev.config');
 var compiler = webpack(webpackConfig);
 
-var host = config.host || 'Michael-Desktop';
+var host = config.host || 'localhost';
 var port = (Number(config.port) + 1) || 3001;
 var serverOptions = {
   contentBase: 'http://' + host + ':' + port,

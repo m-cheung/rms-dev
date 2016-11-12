@@ -11,6 +11,8 @@ import ApiClient from './helpers/ApiClient';
 import Html from './helpers/Html';
 import PrettyError from 'pretty-error';
 import http from 'http';
+import cas from './utils/CAS';
+import jwt from 'jsonwebtoken';
 
 import { match } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
@@ -35,6 +37,23 @@ app.use(Express.static(path.join(__dirname, '..', 'static')));
 // Proxy to API server
 app.use('/api', (req, res) => {
   proxy.web(req, res, {target: targetUrl});
+});
+
+app.use('/login', (req, res) => {
+  cas.authenticate(req, res, (err, status, username) => {
+    if (err) {
+      res.status(500).send({ message: 'Encountered an error while logging in' });
+    } else {
+      // Forge token with username then call API
+      const token = jwt.sign({ username }, config.signing_key);
+      req._token = token;
+      proxy.web(req, res, { target: targetUrl });
+
+      // Store the token on client side
+      console.log(username);
+      res.redirect('/');
+    }
+  }, 'http://localhost:3000/login');
 });
 
 // added the error handling to avoid https://github.com/nodejitsu/node-http-proxy/issues/527

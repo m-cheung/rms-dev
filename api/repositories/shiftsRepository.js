@@ -14,24 +14,23 @@ function createTable(callback) {
     '"createdAt" timestamp with time zone NOT NULL DEFAULT now(),' +
     '"updatedAt" timestamp with time zone NOT NULL DEFAULT now(),' +
     'CONSTRAINT shifts_pkey PRIMARY KEY (id),' +
-    'CONSTRAINT "primaryCheck" FOREIGN KEY (primaryId) ' +
-        'REFERENCES public.users (id) MATCH SIMPLE ' +
-        'ON UPDATE NO ACTION ' +
-        'ON DELETE NO ACTION,' +
-    'CONSTRAINT "rookieCheck" FOREIGN KEY (rookieId) ' +
-        'REFERENCES public.users (id) MATCH SIMPLE ' +
-        'ON UPDATE NO ACTION ' +
-        'ON DELETE NO ACTION,' +
-    'CONSTRAINT "secondaryCheck" FOREIGN KEY (secondaryId) ' +
-        'REFERENCES public.users (id) MATCH SIMPLE ' +
-        'ON UPDATE NO ACTION ' +
-        'ON DELETE NO ACTION,' +
+    'CONSTRAINT "primaryCheck" FOREIGN KEY ("primaryId") ' +
+      'REFERENCES "users" (id) MATCH SIMPLE ' +
+      'ON UPDATE NO ACTION ' +
+      'ON DELETE NO ACTION,' +
+    'CONSTRAINT "rookieCheck" FOREIGN KEY ("rookieId") ' +
+      'REFERENCES "users" (id) MATCH SIMPLE ' +
+      'ON UPDATE NO ACTION ' +
+      'ON DELETE NO ACTION,' +
+    'CONSTRAINT "secondaryCheck" FOREIGN KEY ("secondaryId") ' +
+      'REFERENCES "users" (id) MATCH SIMPLE ' +
+      'ON UPDATE NO ACTION ' +
+      'ON DELETE NO ACTION,' +
     'CONSTRAINT "timeCheck" CHECK ("start" < "end")' +
   ');';
 
   dbAdaptor.executeQuery(query, null, callback);
 }
-
 
 module.exports = {
   addShift: (shift, callback) => {
@@ -53,9 +52,22 @@ module.exports = {
   },
 
   getShifts: (getAll, callback) => {
-    const query = 'SELECT "id", "name", "start", "end", "type", "primaryId", "secondaryId", "rookieId", "description" ' +
-                  'FROM "shifts" ' +
-                  'WHERE "end" > CURRENT_TIMESTAMP OR $1;';
+    const query = 'SELECT ' +
+                  'sh."id", ' +
+                  'sh."name", ' +
+                  'sh."start", ' +
+                  'sh."end", ' +
+                  'sh."type", ' +
+                  'p."firstName" || \' \' || p."lastName" AS "primary", ' +
+                  's."firstName" || \' \' || s."lastName" AS "secondary", ' +
+                  'r."firstName" || \' \' || r."lastName" AS "rookie", ' +
+                  'sh."description" ' +
+                'FROM "shifts" sh ' +
+                'LEFT JOIN "users" p ON p."id" = sh."primaryId" ' +
+                'LEFT JOIN "users" s ON s."id" = sh."secondaryId" ' +
+                'LEFT JOIN "users" r ON r."id" = sh."rookieId" ' +
+                'WHERE "end" > CURRENT_TIMESTAMP OR $1 ' +
+                'ORDER BY sh."start", sh."name";';
     const params = [ getAll ];
 
     dbAdaptor.executeQuery(query, params, callback);
