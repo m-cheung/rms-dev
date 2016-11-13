@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use('/login', authority.loginCheck, (req, res) => {
   console.log('GOT HERE');
   res.json({});
-  //actions.login(req).then((result) => res.json(result));
+  // actions.login(req).then((result) => res.json(result));
 });
 
 app.use('/users', users);
@@ -51,9 +51,9 @@ if (config.apiPort) {
     if (err) {
       console.error('API is unable to start due to database initialization failure');
     } else {
-        app.listen(config.apiPort, (err) => {
-        if (err) {
-          console.error(err);
+      app.listen(config.apiPort, (error) => {
+        if (error) {
+          console.error(error);
         }
         console.info('----\n==> 🌎  API is running on port %s', config.apiPort);
         console.info('==> 💻  Send requests to http://%s:%s', config.apiHost, config.apiPort);
