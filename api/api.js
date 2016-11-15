@@ -8,7 +8,7 @@ import shifts from './controllers/shiftsController';
 import users from './controllers/usersController';
 import dbManager from './managers/dbManager';
 
-// import * as actions from './actions/index';
+import * as actions from './actions/index';
 import authority from './middleware/authority';
 
 const app = express();
@@ -18,9 +18,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use('/login', authority.loginCheck, (req, res) => {
-  console.log('GOT HERE');
-  res.json({});
-  // actions.login(req).then((result) => res.json(result));
+  actions.login(req).then((result) => {
+    res.json(result);
+  }).catch((err) => {
+    res.status(403).json({ message: err.message });
+  });
 });
 
 app.use('/users', users);

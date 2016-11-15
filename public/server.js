@@ -39,19 +39,24 @@ app.use('/api', (req, res) => {
   proxy.web(req, res, {target: targetUrl});
 });
 
-app.use('/login', (req, res) => {
+app.use('/login', (req, res, next) => {
   cas.authenticate(req, res, (err, status, username) => {
     if (err) {
       res.status(500).send({ message: 'Encountered an error while logging in' });
     } else {
       // Forge token with username then call API
       const token = jwt.sign({ username }, config.signing_key);
-      req._token = token;
-      proxy.web(req, res, { target: targetUrl });
+      req.headers.authorization = token;
 
-      // Store the token on client side
-      console.log(username);
-      res.redirect('/');
+      const client = new ApiClient(req);
+
+      client.get('/login').then((result) => {
+        req.headers.authorization = result;
+        next();
+      }).catch((error) => {
+        console.error(error);
+        res.redirect('/404');
+      });
     }
   }, 'http://localhost:3000/login');
 });

@@ -8,6 +8,7 @@ export default function login(req) {
 
     usersRepo.getUser(username, (err, users) => {
       if (err) {
+        console.error(err);
         reject('An error was encountered while communicating with the database');
       } else if (users.length !== 1) {
         reject('This user is not registered');
@@ -16,7 +17,7 @@ export default function login(req) {
         const token = jwt.sign(user, config.signing_key, {
           expiresIn: 60 * 60 * 2 // Expires in 2 hours
         });
-        resolve({ user, token }); // Client should store the token
+        resolve(token); // Client should store the token
       }
     });
   });
