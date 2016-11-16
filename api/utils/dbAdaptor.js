@@ -26,7 +26,7 @@ module.exports = {
         client.release();
         callback(null, result.rows);
       }).catch((err) => {
-        client.release();
+        // client.release();
         callback(err);
       });
     }).catch((err) => {

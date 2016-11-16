@@ -12,9 +12,11 @@ import {
     Survey,
     NotFound,
   } from 'containers';
+import cookie from 'react-cookie';
 
 export default (store) => {
   const requireLogin = (nextState, replace, cb) => {
+    const token = cookie.load('token');
     function checkAuth() {
       const { auth: { user }} = store.getState();
       if (!user) {
@@ -42,14 +44,13 @@ export default (store) => {
       { /* Routes requiring login */ }
       <Route onEnter={requireLogin}>
         <Route path="loginSuccess" component={LoginSuccess}/>
-
+        <Route path="shifts" component={Shifts}/>
       </Route>
 
       { /* Routes */ }
       <Route path="about" component={About}/>
       <Route path="login" component={Login}/>
 
-      <Route path="shifts" component={Shifts}/>
       <Route path="survey" component={Survey}/>
       <Route path="widgets" component={Widgets}/>
 

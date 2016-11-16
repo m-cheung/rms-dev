@@ -20,6 +20,8 @@ import { ReduxAsyncConnect, loadOnServer } from 'redux-async-connect';
 import createHistory from 'react-router/lib/createMemoryHistory';
 import {Provider} from 'react-redux';
 import getRoutes from './routes';
+import cookieParser from 'cookie-parser';
+import cookie from 'react-cookie';
 
 const targetUrl = 'http://' + config.apiHost + ':' + config.apiPort;
 const pretty = new PrettyError();
@@ -33,13 +35,14 @@ app.use(compression());
 app.use(favicon(path.join(__dirname, '..', 'static', 'favicon.ico')));
 
 app.use(Express.static(path.join(__dirname, '..', 'static')));
+app.use(cookieParser());
 
 // Proxy to API server
 app.use('/api', (req, res) => {
   proxy.web(req, res, {target: targetUrl});
 });
 
-app.use('/login', (req, res, next) => {
+app.use('/login', (req, res) => {
   cas.authenticate(req, res, (err, status, username) => {
     if (err) {
       res.status(500).send({ message: 'Encountered an error while logging in' });
@@ -51,10 +54,12 @@ app.use('/login', (req, res, next) => {
       const client = new ApiClient(req);
 
       client.get('/login').then((result) => {
-        req.headers.authorization = result;
-        next();
+        // cookie.save('token', result, { path: '/' });
+        // res.redirect('/');
+        res.cookie('token', result, { httpOnly: false }).redirect('/');
       }).catch((error) => {
         console.error(error);
+        // This should be replaced with a 'Authentication error' page
         res.redirect('/404');
       });
     }
