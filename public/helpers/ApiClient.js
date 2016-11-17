@@ -1,5 +1,6 @@
 import superagent from 'superagent';
 import config from '../config';
+import cookie from 'react-cookie';
 
 const methods = ['get', 'post', 'put', 'patch', 'del'];
 
@@ -18,9 +19,10 @@ export default class ApiClient {
     methods.forEach((method) =>
       this[method] = (path, { params, data } = {}) => new Promise((resolve, reject) => {
         const request = superagent[method](formatUrl(path));
+        const token = cookie.load('token');
 
         // Add authorization
-        request.set('Authorization', 'Bearer ' + req.headers.authorization);
+        request.set('Authorization', 'Bearer ' + token);
 
         if (params) {
           request.query(params);

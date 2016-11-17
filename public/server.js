@@ -42,21 +42,20 @@ app.use('/api', (req, res) => {
   proxy.web(req, res, {target: targetUrl});
 });
 
-app.use('/login', (req, res) => {
+app.use('/login', (req, res, next) => {
   cas.authenticate(req, res, (err, status, username) => {
     if (err) {
       res.status(500).send({ message: 'Encountered an error while logging in' });
     } else {
       // Forge token with username then call API
       const token = jwt.sign({ username }, config.signing_key);
-      req.headers.authorization = token;
+      cookie.save('token', token);
 
       const client = new ApiClient(req);
 
       client.get('/login').then((result) => {
-        // cookie.save('token', result, { path: '/' });
-        // res.redirect('/');
-        res.cookie('token', result, { httpOnly: false }).redirect('/');
+        res.cookie('token', result);
+        next();
       }).catch((error) => {
         console.error(error);
         // This should be replaced with a 'Authentication error' page

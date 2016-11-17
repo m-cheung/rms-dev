@@ -7,16 +7,33 @@ import {
     Shifts,
     Widgets,
     About,
-    Login,
+  //  Login,
     LoginSuccess,
     Survey,
     NotFound,
   } from 'containers';
-import cookie from 'react-cookie';
+
+// Authorization Mask (Lower bits reserved for server)
+// const SHIFTS_PERMISSION = 65536;     // 0000 0000 0000 0001 0000 0000 0000 0000
+
+// function permissionCheck(param1, param2, param3, param4) {
+//   console.log(param1);
+//   console.log(param2);
+//   console.log(param3);
+//   console.log(param4);
+// }
+
 
 export default (store) => {
+  const redirectLogin = (nextState, replace, cb) => {
+    if (!isAuthLoaded(store.getState())) {
+      store.dispatch(loadAuth());
+    }
+    replace('/');
+    cb();
+  };
+
   const requireLogin = (nextState, replace, cb) => {
-    const token = cookie.load('token');
     function checkAuth() {
       const { auth: { user }} = store.getState();
       if (!user) {
@@ -26,6 +43,7 @@ export default (store) => {
       cb();
     }
 
+    // In the future, revoke token if authorization fails.
     if (!isAuthLoaded(store.getState())) {
       store.dispatch(loadAuth()).then(checkAuth);
     } else {
@@ -49,7 +67,7 @@ export default (store) => {
 
       { /* Routes */ }
       <Route path="about" component={About}/>
-      <Route path="login" component={Login}/>
+      <Route path="login" onEnter={redirectLogin}/>
 
       <Route path="survey" component={Survey}/>
       <Route path="widgets" component={Widgets}/>

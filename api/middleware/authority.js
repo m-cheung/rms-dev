@@ -1,6 +1,9 @@
 const config = require('../../public/config');
 const jwt = require('jsonwebtoken');
 
+// Authorization Mask (Reserving the upper half for client-side)
+const USER_PERMISSION = 1; // 0000 0000 0000 0000 0000 0000 0000 0001
+
 module.exports = {
   // Using the user from the database, write properties in token
   loginCheck: (req, res, next) => {
@@ -25,7 +28,7 @@ module.exports = {
 
   userCheck: (req, res, next) => {
     const token = req.headers.authorization.split(' ');
-
+    console.log(token);
     if (!token || token[0] !== 'Bearer') {
       res.status(403).send({ message: 'Client has not properly authenticated through CAS' });
       next(new Error('Unauthenticated'));
@@ -34,7 +37,7 @@ module.exports = {
         if (err) {
           res.status(403).send({ message: 'Invalid token was provided' });
           next(new Error('Invalid token'));
-        } else if (decoded.permissions !== 'user') {
+        } else if (!(decoded.permissions & USER_PERMISSION)) {
           res.status(403).send({ message: 'Insufficient privillages' });
         } else {
           req._decoded = decoded;

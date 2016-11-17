@@ -53,7 +53,8 @@ export default class App extends Component {
 
   handleLogin = (event) => {
     event.preventDefault();
-    this.props.login();
+    window.location = 'https://cas.uwaterloo.ca/cas/login?service=http%3A%2F%2Flocalhost%3A3000%2Flogin';
+    // this.props.login();
   }
 
   handleLogout = (event) => {
@@ -104,7 +105,7 @@ export default class App extends Component {
                 <NavItem eventKey={6}>Login</NavItem>
               </LinkContainer>}
               {user &&
-              <NavDropdown eventKey={7} title={'Logged in as ' + user.name} id="user-dropdown">
+              <NavDropdown eventKey={7} title={'Logged in as ' + user.firstName + ' ' + user.lastName} id="user-dropdown">
                 <LinkContainer to="/profile">
                   <NavItem eventKey={7.1} className="profile-link">
                     Profile
