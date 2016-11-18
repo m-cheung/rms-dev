@@ -6,7 +6,8 @@ function createTable(callback) {
     '"username" character varying(255) NOT NULL,' +
     '"firstName" character varying(255),' +
     '"lastName" character varying(255),' +
-    '"active" boolean NOT NULL DEFAULT true,' +
+    '"active" boolean NOT NULL DEFAULT false,' +
+    '"rank" integer NOT NULL,' +
     '"permissions" integer NOT NULL DEFAULT 0, ' +
     '"wantsNotification" boolean NOT NULL DEFAULT false,' +
     '"lastNotified" timestamp with time zone,' +
@@ -24,7 +25,7 @@ module.exports = {
   createTable: createTable,
 
   getUser: (username, callback) => {
-    const query = 'SELECT "id", "username", "firstName", "lastName", "active", "permissions", "wantsNotification" ' +
+    const query = 'SELECT "id", "username", "firstName", "lastName", "active", "rank", "permissions", "wantsNotification" ' +
                   'FROM "users" WHERE "username"=$1;';
     const params = [ username ];
     dbAdaptor.executeQuery(query, params, callback);

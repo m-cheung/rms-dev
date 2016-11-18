@@ -28,7 +28,6 @@ app.use('/login', authority.loginCheck, (req, res) => {
 app.use('/users', users);
 app.use('/shifts', shifts);
 
-
 // Catch all for path errors
 app.use((req, res) => {
   logger.logEvent('(404) Not Found', 'Request path ' + req.originalUrl);

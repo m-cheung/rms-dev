@@ -1,4 +1,9 @@
+const async = require('async');
+const { CRITICAL_TIME } = require('../constants/applicationConstants');
+const { RANK } = require('../constants/usersConstants');
+
 const shiftsRepository = require('../repositories/shiftsRepository');
+const shiftTypeRepository = require('../repositories/shiftTypesRepository');
 
 module.exports = {
   addShift: (shift, callback) => {
@@ -64,5 +69,52 @@ module.exports = {
         callback(null, { message: 'Shift was successfully updated' });
       }
     });
+  },
+
+  takeShift: (shiftId, user, callback) => {
+    async.waterfall([
+      // Get shift information from database
+      (cb) => {
+        shiftsRepository.getShift(shiftId, cb);
+      },
+      // Get information on the type of shift
+      (shift, cb) => {
+        const type = shift.type;
+
+        shiftTypeRepository.getShiftTypeById(type, (err, shiftType) => {
+          cb(err, shift, shiftType);
+        });
+      },
+      // Verify that the user can take the shift
+      (shift, shiftType, cb) => {
+        const start = new Date(shift.start);
+        const criticalTime = new Date();
+        criticalTime.setMinutes(criticalTime.getMinutes() - CRITICAL_TIME, criticalTime.getSeconds());
+
+        const isCritical = criticalTime < new Date();
+        const userRank = user.rank;
+
+        // Get all of the shift hours of the user...
+        // Primary: check and see if primary spot available
+        if (userRank === RANK.Primary && shift.primary === null) {
+          // const primaryReq = shiftType.primaryReq;
+          console.log('INC');
+        }
+
+
+        if (userRank === RANK.Secondary || userRank <= RANK.Secondary && isCritical) {
+          console.log('INC');
+        }
+
+        // Rookie
+        // if {
+
+        // }
+        cb(start);
+      }
+
+
+
+    ], callback);
   }
 };

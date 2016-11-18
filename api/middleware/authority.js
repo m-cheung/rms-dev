@@ -27,8 +27,9 @@ module.exports = {
   },
 
   userCheck: (req, res, next) => {
-    const token = req.headers.authorization.split(' ');
-    console.log(token);
+    const authorization = req.headers.authorization;
+    const token = (authorization !== undefined) ? authorization.split(' ') : null;
+
     if (!token || token[0] !== 'Bearer') {
       res.status(403).send({ message: 'Client has not properly authenticated through CAS' });
       next(new Error('Unauthenticated'));

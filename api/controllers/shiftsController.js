@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import shiftsManager from '../managers/shiftsManager';
 import logger from '../utils/logger';
-// import authority from '../middleware/authority';
+import authority from '../middleware/authority';
 
 const router = new Router();
 
-router.get('/', (req, res) => {
+router.get('/', authority.userCheck, (req, res) => {
   const getAll = req.query.getAll || false;
 
   shiftsManager.getShifts(getAll, (err, result) => {
@@ -31,7 +31,7 @@ router.post('/add', (req, res) => {
   });
 });
 
-router.delete('/delete/:shiftId', (req, res) => {
+router.delete('/:shiftId/delete', (req, res) => {
   const shiftId = req.params.shiftId;
 
   shiftsManager.deleteShift(shiftId, (err, result) => {
@@ -44,13 +44,27 @@ router.delete('/delete/:shiftId', (req, res) => {
   });
 });
 
-router.patch('/modify/:shiftId', (req, res) => {
+router.patch('/:shiftId/modify', (req, res) => {
   const shift = req.body;
   shift.id = req.params.shiftId;
 
   shiftsManager.modifyShift(shift, (err, result) => {
     if (err) {
       logger.logError('Shifts Controller - Modify Shift', err.error);
+      res.status(err.statusCode || 500).json({ message: err.message });
+    } else {
+      res.json(result);
+    }
+  });
+});
+
+router.post('/:shiftId/take', (req, res) => {
+  const user = req._decoded;
+  const shiftId = req.params.shiftId;
+
+  shiftsManager.takeShift(shiftId, user, (err, result) => {
+    if (err) {
+      logger.logError('Shifts Controller - Take Shift', err.error);
       res.status(err.statusCode || 500).json({ message: err.message });
     } else {
       res.json(result);

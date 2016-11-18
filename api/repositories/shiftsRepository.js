@@ -51,6 +51,15 @@ module.exports = {
     dbAdaptor.executeQuery(query, params, callback);
   },
 
+  getShift: (shiftId, callback) => {
+    const query = 'SELECT "id", "name", "start", "end", "type", "primaryId", "secondaryId", "rookieId", "description" ' +
+                  'FROM "shifts" ' +
+                  'WHERE "id"=$1;';
+    const params = [ shiftId ];
+
+    dbAdaptor.executeQuery(query, params, callback);
+  },
+
   getShifts: (getAll, callback) => {
     const query = 'SELECT ' +
                   'sh."id", ' +
