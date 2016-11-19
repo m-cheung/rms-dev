@@ -1,3 +1,4 @@
+import configRepository from '../repositories/configRepository';
 import shiftsRepository from '../repositories/shiftsRepository';
 import shiftTypesRepository from '../repositories/shiftTypesRepository';
 import usersRepository from '../repositories/usersRepository';
@@ -7,6 +8,9 @@ module.exports = {
   initDB: (callback) => {
     async.waterfall([
       (cb) => {
+        configRepository.createTable(cb);
+      },
+      (results, cb) => {
         shiftTypesRepository.createTable(cb);
       },
       (results, cb) => {

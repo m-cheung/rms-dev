@@ -4,6 +4,7 @@ function createTable(callback) {
   const query = 'CREATE TABLE IF NOT EXISTS "shifts" (' +
     '"id" serial NOT NULL,' +
     '"name" character varying(255) NOT NULL,' +
+    '"location" character varying(255) NOT NULL,' +
     '"start" timestamp with time zone NOT NULL,' +
     '"end" timestamp with time zone NOT NULL,' +
     '"type" integer,' +
@@ -26,6 +27,9 @@ function createTable(callback) {
       'REFERENCES "users" (id) MATCH SIMPLE ' +
       'ON UPDATE NO ACTION ' +
       'ON DELETE NO ACTION,' +
+    'CONSTRAINT "shiftTypeCheck" FOREIGN KEY (type) ' +
+      'REFERENCES public."shiftTypes" (id) MATCH SIMPLE ' +
+      'ON UPDATE NO ACTION ON DELETE NO ACTION,' +
     'CONSTRAINT "timeCheck" CHECK ("start" < "end")' +
   ');';
 
@@ -34,10 +38,10 @@ function createTable(callback) {
 
 module.exports = {
   addShift: (shift, callback) => {
-    const { name, start, end, type, desc } = shift;
-    const query = 'INSERT INTO "shifts" ("name", "start", "end", "type", "description") ' +
-                  'VALUES ($1, $2, $3, $4, $5);';
-    const params = [ name, start, end, type, desc ];
+    const { name, location, start, end, type, desc } = shift;
+    const query = 'INSERT INTO "shifts" ("name", "location", "start", "end", "type", "description") ' +
+                  'VALUES ($1, $2, $3, $4, $5, $6);';
+    const params = [ name, location, start, end, type, desc ];
 
     dbAdaptor.executeQuery(query, params, callback);
   },
@@ -52,7 +56,7 @@ module.exports = {
   },
 
   getShift: (shiftId, callback) => {
-    const query = 'SELECT "id", "name", "start", "end", "type", "primaryId", "secondaryId", "rookieId", "description" ' +
+    const query = 'SELECT "id", "name", "location", "start", "end", "type", "primaryId", "secondaryId", "rookieId", "description" ' +
                   'FROM "shifts" ' +
                   'WHERE "id"=$1;';
     const params = [ shiftId ];
@@ -66,9 +70,10 @@ module.exports = {
     const query = 'SELECT ' +
                   'sh."id", ' +
                   'sh."name", ' +
+                  'sh."location", ' +
                   'sh."start", ' +
                   'sh."end", ' +
-                  'sh."type", ' +
+                  'st."name" AS "type", ' +
                   'p."firstName" || \' \' || p."lastName" AS "primary", ' +
                   's."firstName" || \' \' || s."lastName" AS "secondary", ' +
                   'r."firstName" || \' \' || r."lastName" AS "rookie", ' +
@@ -77,6 +82,7 @@ module.exports = {
                 'LEFT JOIN "users" p ON p."id" = sh."primaryId" ' +
                 'LEFT JOIN "users" s ON s."id" = sh."secondaryId" ' +
                 'LEFT JOIN "users" r ON r."id" = sh."rookieId" ' +
+                'LEFT JOIN "shiftTypes" st on st."id" = sh."type" ' +
                 'WHERE "end" > CURRENT_TIMESTAMP OR $1 ' +
                 'ORDER BY sh."start", sh."name";';
     const params = [ getAll ];
@@ -85,7 +91,7 @@ module.exports = {
   },
 
   getUserShifts: (userId, getAll, type, callback) => {
-    let query = 'SELECT "id", "name", "start", "end", "type", "description" ' +
+    let query = 'SELECT "id", "name", "location", "start", "end", "type", "description" ' +
                 'FROM "shifts" ' +
                 'WHERE ("primaryId"=$1 OR "secondaryId"=$1 OR "rookieId"=$1) ' +
                   'AND ("end" > CURRENT_TIMESTAMP OR $2) ';

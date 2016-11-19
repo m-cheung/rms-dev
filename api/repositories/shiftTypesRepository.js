@@ -7,7 +7,7 @@ function createTable(callback) {
     '"primaryReq" int NOT NULL DEFAULT 0,' +
     '"secondaryReq" int NOT NULL DEFAULT 0,' +
     '"rookieReq" int NOT NULL DEFAULT 0,' +
-    'CONSTRAINT id_pkey PRIMARY KEY (id)' +
+    'CONSTRAINT shiftTypes_pkey PRIMARY KEY (id)' +
   ');';
 
   dbAdaptor.executeQuery(query, null, callback);

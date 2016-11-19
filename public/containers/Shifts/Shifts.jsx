@@ -4,8 +4,9 @@ import {connect} from 'react-redux';
 import * as shiftsActions from 'redux/modules/shifts';
 import {isLoaded, load as loadShifts} from 'redux/modules/shifts';
 import {initializeWithKey} from 'redux-form';
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import { asyncConnect } from 'redux-async-connect';
+import moment from 'moment';
 
 @asyncConnect([{
   deferred: true,
@@ -19,37 +20,25 @@ import { asyncConnect } from 'redux-async-connect';
   state => ({
     shifts: state.shifts.data,
     // editing: state.widgets.editing,
-    // error: state.widgets.error,
-    loading: state.widgets.loading
+    error: state.shifts.error,
+    loading: state.shifts.loading
   }),
   {...shiftsActions, initializeWithKey })
 export default class Shifts extends Component {
   static propTypes = {
-    shifts: PropTypes.array,
-    error: PropTypes.string,
-    loading: PropTypes.bool,
+    error: PropTypes.object,
     // initializeWithKey: PropTypes.func.isRequired,
     // editing: PropTypes.object.isRequired,
     load: PropTypes.func.isRequired,
+    loading: PropTypes.bool,
     // editStart: PropTypes.func.isRequired
+    shifts: PropTypes.array,
+    success: PropTypes.object,
+    takeShift: PropTypes.func.isRequired
   };
 
-  shiftHeader() {
-    return (
-      <tr>
-        <td>Name</td>
-        <td>Location</td>
-      </tr>
-    );
-  }
-
   render() {
-   // const handleEdit = (widget) => {
-   //   const {editStart} = this.props; // eslint-disable-line no-shadow
-   //   return () => editStart(String(widget.id));
-   // };
-    // const _this = this;
-    const {shifts, error, loading, load} = this.props;
+    const {error, load, loading, shifts, success, takeShift} = this.props;
     let refreshClassName = 'fa fa-refresh';
     if (loading) {
       refreshClassName += ' fa-spin';
@@ -79,7 +68,13 @@ export default class Shifts extends Component {
         <div className="alert alert-danger" role="alert">
           <span className="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
           {' '}
-          {error}
+          {error.message}
+        </div>}
+        {success &&
+        <div className="alert alert-danger" role="success">
+          <span className="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+          {' '}
+          {success.message}
         </div>}
         {shifts && shifts.length &&
         <Table className="table table-condensed">
@@ -87,8 +82,8 @@ export default class Shifts extends Component {
             <tr>
               <th className={styles.colorCol}>Name</th>
               <th className={styles.colorCol}>Location</th>
-              <th className={styles.idCol}>Start</th>
-              <th className={styles.idCol}>End</th>
+              <th className={styles.colorCol}>Start</th>
+              <th className={styles.colorCol}>End</th>
               <th className={styles.ownerCol}>Primary</th>
               <th className={styles.ownerCol}>Secondary</th>
               <th className={styles.ownerCol}>Rookie</th>
@@ -101,12 +96,13 @@ export default class Shifts extends Component {
                   <tr key={index}>
                     <td>{shift.name}</td>
                     <td>{shift.location}</td>
-                    <td>{new Date(shift.start).toString()}</td>
-                    <td>{new Date(shift.end).toString()}</td>
+                    <td>{moment(shift.start).format('dddd MMM Do, YYYY HH:mm')}</td>
+                    <td>{moment(shift.end).format('dddd MMM Do, YYYY HH:mm')}</td>
                     <td>{shift.primary}</td>
                     <td>{shift.secondary}</td>
                     <td>{shift.rookie}</td>
                     <td>{shift.type}</td>
+                    <td><Button onClick={takeShift.bind(this, shift.id)}>Take Shift</Button></td>
                   </tr>)
             }
           </tbody>

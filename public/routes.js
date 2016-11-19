@@ -29,7 +29,7 @@ export default (store) => {
     if (!isAuthLoaded(store.getState())) {
       store.dispatch(loadAuth());
     }
-    replace('/');
+    // replace('/');
     cb();
   };
 
@@ -67,7 +67,7 @@ export default (store) => {
 
       { /* Routes */ }
       <Route path="about" component={About}/>
-      <Route path="login" onEnter={redirectLogin}/>
+      <Route path="login" component={Home} onEnter={redirectLogin}/>
 
       <Route path="survey" component={Survey}/>
       <Route path="widgets" component={Widgets}/>

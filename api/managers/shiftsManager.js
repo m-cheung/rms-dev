@@ -92,7 +92,10 @@ module.exports = {
         if (user.active === false) {
           cb({ message: 'You cannot take the shift as you are an inactive member' });
         } else if (shift.primaryId === userId || shift.secondaryId === userId || shift.rookieId === userId) {
-          cb({ message: 'You are already a responder for this shift' });
+          cb({
+            statusCode: 409,
+            message: 'You are already a responder for this shift'
+          });
         } else {
           cb(null, shift);
         }
