@@ -3,7 +3,7 @@ const { CRITICAL_TIME } = require('../constants/applicationConstants');
 const { RANK } = require('../constants/usersConstants');
 
 const shiftsRepository = require('../repositories/shiftsRepository');
-const shiftTypeRepository = require('../repositories/shiftTypesRepository');
+const shiftTypesRepository = require('../repositories/shiftTypesRepository');
 
 module.exports = {
   addShift: (shift, callback) => {
@@ -77,44 +77,84 @@ module.exports = {
       (cb) => {
         shiftsRepository.getShift(shiftId, cb);
       },
+      // Verify shift start date has not passed
+      (shift, cb) => {
+        if (new Date(shift.start) < new Date()) {
+          cb({ message: 'You cannot take a shift that has already started or past' });
+        } else {
+          cb(null, shift);
+        }
+      },
+      // Check to see if user already took shift and if user is active
+      (shift, cb) => {
+        const userId = user.id;
+
+        if (user.active === false) {
+          cb({ message: 'You cannot take the shift as you are an inactive member' });
+        } else if (shift.primaryId === userId || shift.secondaryId === userId || shift.rookieId === userId) {
+          cb({ message: 'You are already a responder for this shift' });
+        } else {
+          cb(null, shift);
+        }
+      },
       // Get information on the type of shift
       (shift, cb) => {
         const type = shift.type;
-
-        shiftTypeRepository.getShiftTypeById(type, (err, shiftType) => {
-          cb(err, shift, shiftType);
+        async.parallel([
+          (innerCb) => { shiftTypesRepository.getShiftTypeById(type, innerCb); },
+          (innerCb) => { shiftsRepository.sumUserShifts(user.id, type, innerCb); }
+        ], (err, results) => {
+          cb(err, shift, results);
         });
       },
       // Verify that the user can take the shift
-      (shift, shiftType, cb) => {
-        const start = new Date(shift.start);
-        const criticalTime = new Date();
-        criticalTime.setMinutes(criticalTime.getMinutes() - CRITICAL_TIME, criticalTime.getSeconds());
+      (shift, results, cb) => {
+        const shiftType = results[0];
+        const sumUserShifts = results[1]; // User shifts are reported in seconds
+
+        let criticalTime = new Date(shift.start);
+        criticalTime = new Date(criticalTime.getTime() - CRITICAL_TIME * 1000); // 1000 ms in one second
 
         const isCritical = criticalTime < new Date();
         const userRank = user.rank;
 
-        // Get all of the shift hours of the user...
-        // Primary: check and see if primary spot available
-        if (userRank === RANK.Primary && shift.primary === null) {
-          // const primaryReq = shiftType.primaryReq;
-          console.log('INC');
+        // Primary: Spot available and user is primary
+        if (shift.primaryId === null && userRank === RANK.Primary) {
+          const primaryReq = shiftType.primaryReq;
+
+          if ((sumUserShifts < primaryReq) || isCritical) {
+            shiftsRepository.setShiftPrimary(shift.id, user.id, cb);
+            return;
+          }
         }
 
-
-        if (userRank === RANK.Secondary || userRank <= RANK.Secondary && isCritical) {
-          console.log('INC');
+        // Secondary: Spot available, user is secondary or primary and shift is critical
+        if (shift.secondaryId === null && userRank <= RANK.Secondary) {
+          const secondaryReq = shiftType.secondaryReq;
+          if ((userRank === RANK.Secondary && sumUserShifts < secondaryReq) || isCritical) {
+            shiftsRepository.setShiftSecondary(shift.id, user.id, cb);
+            return;
+          }
         }
 
-        // Rookie
-        // if {
+        // Rookie: Spot available, user is rookie or shift is critical
+        if (shift.rookieId === null) {
+          const rookieReq = shiftType.rookieReq;
+          if ((userRank === RANK.Rookie && sumUserShifts < rookieReq) || isCritical) {
+            shiftsRepository.setShiftRookie(shift.id, user.id, cb);
+            return;
+          }
+        }
 
-        // }
-        cb(start);
+        // Final Case: None of the spots are actually available
+        cb({ message: 'You are not able to take this shift' });
       }
-
-
-
-    ], callback);
+    ], (err) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, { message: 'Successfully registered for shift' });
+      }
+    });
   }
 };

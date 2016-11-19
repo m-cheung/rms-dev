@@ -58,13 +58,13 @@ router.patch('/:shiftId/modify', (req, res) => {
   });
 });
 
-router.post('/:shiftId/take', (req, res) => {
+router.post('/:shiftId/take', authority.userCheck, (req, res) => {
   const user = req._decoded;
   const shiftId = req.params.shiftId;
 
   shiftsManager.takeShift(shiftId, user, (err, result) => {
     if (err) {
-      logger.logError('Shifts Controller - Take Shift', err.error);
+      logger.logError('Shifts Controller - Take Shift (' + user.username + ')', err.error || err.message);
       res.status(err.statusCode || 500).json({ message: err.message });
     } else {
       res.json(result);

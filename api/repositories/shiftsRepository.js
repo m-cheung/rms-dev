@@ -57,7 +57,9 @@ module.exports = {
                   'WHERE "id"=$1;';
     const params = [ shiftId ];
 
-    dbAdaptor.executeQuery(query, params, callback);
+    dbAdaptor.executeQuery(query, params, (err, result) => {
+      callback(err, result[0]);
+    });
   },
 
   getShifts: (getAll, callback) => {
@@ -82,12 +84,17 @@ module.exports = {
     dbAdaptor.executeQuery(query, params, callback);
   },
 
-  getUserShifts: (userId, getAll, callback) => {
-    const query = 'SELECT "id", "name", "start", "end", "type", "description" ' +
-                  'FROM "shifts" ' +
-                  'WHERE ("primaryId"=$1 OR "secondaryId"=$1 OR "rookieId"=$1) ' +
-                    'AND ("end" > CURRENT_TIMESTAMP OR $2);';
+  getUserShifts: (userId, getAll, type, callback) => {
+    let query = 'SELECT "id", "name", "start", "end", "type", "description" ' +
+                'FROM "shifts" ' +
+                'WHERE ("primaryId"=$1 OR "secondaryId"=$1 OR "rookieId"=$1) ' +
+                  'AND ("end" > CURRENT_TIMESTAMP OR $2) ';
     const params = [ userId, getAll ];
+
+    if (type) {
+      query += 'AND "type"=$3;';
+      params.push(type);
+    }
 
     dbAdaptor.executeQuery(query, params, callback);
   },
@@ -107,5 +114,43 @@ module.exports = {
     query += 'WHERE "id"=$1;';
 
     dbAdaptor.executeQuery(query, params, callback);
+  },
+
+  setShiftPrimary: (shiftId, userId, callback) => {
+    const query = 'UPDATE "shifts" ' +
+                  'SET "primaryId"=$1 ' +
+                  'WHERE "id"=$2;';
+    const params = [ userId, shiftId ];
+
+    dbAdaptor.executeQuery(query, params, callback);
+  },
+
+  setShiftRookie: (shiftId, userId, callback) => {
+    const query = 'UPDATE "shifts" ' +
+                  'SET "rookieId"=$1 ' +
+                  'WHERE "id"=$2;';
+    const params = [ userId, shiftId ];
+
+    dbAdaptor.executeQuery(query, params, callback);
+  },
+
+  setShiftSecondary: (shiftId, userId, callback) => {
+    const query = 'UPDATE "shifts" ' +
+                  'SET "secondaryId"=$1 ' +
+                  'WHERE "id"=$2;';
+    const params = [ userId, shiftId ];
+
+    dbAdaptor.executeQuery(query, params, callback);
+  },
+
+  sumUserShifts: (userId, type, callback) => {
+    const query = 'SELECT SUM(EXTRACT (EPOCH FROM "end" - "start")) AS "sum" ' +
+                  'FROM "shifts" ' +
+                  'WHERE "id"=$1 AND "type"=$2;';
+    const params = [ userId, type ];
+
+    dbAdaptor.executeQuery(query, params, (err, result) => {
+      callback(err, result[0].sum);
+    });
   }
 };

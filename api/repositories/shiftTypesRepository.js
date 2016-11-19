@@ -6,7 +6,7 @@ function createTable(callback) {
     '"name" character varying(255) NOT NULL,' +
     '"primaryReq" int NOT NULL DEFAULT 0,' +
     '"secondaryReq" int NOT NULL DEFAULT 0,' +
-    '"rookieReq" int NOT NULL DEFAULT 0' +
+    '"rookieReq" int NOT NULL DEFAULT 0,' +
     'CONSTRAINT id_pkey PRIMARY KEY (id)' +
   ');';
 
@@ -22,7 +22,9 @@ module.exports = {
                   'WHERE "id"=$1;';
     const params = [ typeId ];
 
-    dbAdaptor.executeQuery(query, params, callback);
+    dbAdaptor.executeQuery(query, params, (err, result) => {
+      callback(err, result[0]);
+    });
   },
 
   getShiftTypeByName: (typeName, callback) => {
@@ -31,7 +33,9 @@ module.exports = {
                   'WHERE "name"=$1;';
     const params = [ typeName ];
 
-    dbAdaptor.executeQuery(query, params, callback);
+    dbAdaptor.executeQuery(query, params, (err, result) => {
+      callback(err, result[0]);
+    });
   }
 };
 
