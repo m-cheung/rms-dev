@@ -4,6 +4,11 @@ node_js:
   - "6.9.1"
   - "stable"
 
+env:
+  - DATABASE_USER=travis_ci_test
+  - DATABASE_PASSWORD=""
+  - NODE_ENV=test
+
 sudo: false
 
 before_script:
