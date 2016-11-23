@@ -7,6 +7,7 @@ import {
     Shifts,
     Widgets,
     About,
+    Profile,
   //  Login,
     LoginSuccess,
     Survey,
@@ -29,7 +30,6 @@ export default (store) => {
     if (!isAuthLoaded(store.getState())) {
       store.dispatch(loadAuth());
     }
-    // replace('/');
     cb();
   };
 
@@ -62,13 +62,13 @@ export default (store) => {
       { /* Routes requiring login */ }
       <Route onEnter={requireLogin}>
         <Route path="loginSuccess" component={LoginSuccess}/>
+        <Route path="profile" components={Profile}/>
         <Route path="shifts" component={Shifts}/>
       </Route>
 
       { /* Routes */ }
       <Route path="about" component={About}/>
       <Route path="login" component={Home} onEnter={redirectLogin}/>
-
       <Route path="survey" component={Survey}/>
       <Route path="widgets" component={Widgets}/>
 

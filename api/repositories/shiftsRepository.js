@@ -77,12 +77,14 @@ module.exports = {
                   'p."firstName" || \' \' || p."lastName" AS "primary", ' +
                   's."firstName" || \' \' || s."lastName" AS "secondary", ' +
                   'r."firstName" || \' \' || r."lastName" AS "rookie", ' +
-                  'sh."description" ' +
+                  'sh."description", ' +
+                  'now() > (sh."start" - interval \'1 second\' * CAST (c."value" AS INTEGER)) AS "isCritical" ' +
                 'FROM "shifts" sh ' +
                 'LEFT JOIN "users" p ON p."id" = sh."primaryId" ' +
                 'LEFT JOIN "users" s ON s."id" = sh."secondaryId" ' +
                 'LEFT JOIN "users" r ON r."id" = sh."rookieId" ' +
                 'LEFT JOIN "shiftTypes" st on st."id" = sh."type" ' +
+                'LEFT JOIN "config" c ON c."name"=\'CRITICAL_TIME\' ' +
                 'WHERE "end" > CURRENT_TIMESTAMP OR $1 ' +
                 'ORDER BY sh."start", sh."name";';
     const params = [ getAll ];

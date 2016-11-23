@@ -45,12 +45,12 @@ export default class Shifts extends Component {
     }
     const styles = require('./Shifts.scss');
     return (
-      <div className={styles.widgets + ' container'}>
+      <div className={styles.shifts + ' container'}>
         <h1>
           Shifts
-          <button className={styles.refreshBtn + ' btn btn-success'} onClick={load}>
-            <i className={refreshClassName}/> {' '} Reload Widgets
-          </button>
+          <Button className={styles.refreshBtn + ' btn btn-success'} onClick={load}>
+            <i className={refreshClassName}/> {' '} Reload Shifts
+          </Button>
         </h1>
         <Helmet title="Shifts"/>
         <p>You will only be able to take shifts which you meet the criteria for. The restrictions are...</p>
@@ -77,7 +77,7 @@ export default class Shifts extends Component {
           {success.message}
         </div>}
         {shifts && shifts.length &&
-        <Table className="table table-condensed">
+        <Table className="table striped table-condensed">
           <thead>
             <tr>
               <th className={styles.colorCol}>Name</th>
@@ -93,7 +93,7 @@ export default class Shifts extends Component {
           <tbody>
             {
               shifts.map((shift, index) =>
-                  <tr key={index}>
+                  <tr key={index} className={shift.isCritical && styles.critical}>
                     <td>{shift.name}</td>
                     <td>{shift.location}</td>
                     <td>{moment(shift.start).format('dddd MMM Do, YYYY HH:mm')}</td>

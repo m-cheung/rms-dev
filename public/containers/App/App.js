@@ -82,9 +82,10 @@ export default class App extends Component {
 
           <Navbar.Collapse eventKey={0}>
             <Nav navbar>
+              {user &&
               <LinkContainer to="/shifts">
                 <NavItem eventKey={1}>Shifts</NavItem>
-              </LinkContainer>
+              </LinkContainer>}
               <LinkContainer to="/widgets">
                 <NavItem eventKey={2}>Widgets</NavItem>
               </LinkContainer>
@@ -98,21 +99,17 @@ export default class App extends Component {
             <Nav navbar pullRight>
               {!user &&
               <NavItem eventKey={5} className="login-link" onClick={this.handleLogin}>
-                CAS Login
+                Login
               </NavItem>}
-              {!user &&
-              <LinkContainer to="/login">
-                <NavItem eventKey={6}>Login</NavItem>
-              </LinkContainer>}
               {user &&
-              <NavDropdown eventKey={7} title={'Logged in as ' + user.firstName + ' ' + user.lastName} id="user-dropdown">
+              <NavDropdown eventKey={6} title={'Logged in as ' + user.firstName + ' ' + user.lastName} id="user-dropdown">
                 <LinkContainer to="/profile">
-                  <NavItem eventKey={7.1} className="profile-link">
+                  <NavItem eventKey={6.1} className="profile-link">
                     Profile
                   </NavItem>
                 </LinkContainer>
                 <LinkContainer to="/logout">
-                  <NavItem eventKey={7.2} className="logout-link" onClick={this.handleLogout}>
+                  <NavItem eventKey={6.2} className="logout-link" onClick={this.handleLogout}>
                     Logout
                   </NavItem>
                 </LinkContainer>
