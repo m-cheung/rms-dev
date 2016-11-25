@@ -8,7 +8,6 @@ import {
     Widgets,
     About,
     Profile,
-  //  Login,
     LoginSuccess,
     Survey,
     NotFound,
