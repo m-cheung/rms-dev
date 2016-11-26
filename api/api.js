@@ -4,6 +4,7 @@ import express from 'express';
 import config from '../public/config';
 import logger from './utils/logger';
 
+import certifications from './controllers/certificatesController';
 import shifts from './controllers/shiftsController';
 import users from './controllers/usersController';
 import dbManager from './managers/dbManager';
@@ -14,8 +15,8 @@ import authority from './middleware/authority';
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true, limit: '2mb' }));
+app.use(bodyParser.json({ limit: '2mb' }));
 
 app.use('/login', authority.loginCheck, (req, res) => {
   actions.login(req).then((result) => {
@@ -25,8 +26,9 @@ app.use('/login', authority.loginCheck, (req, res) => {
   });
 });
 
-app.use('/users', users);
+app.use('/certifications', certifications);
 app.use('/shifts', shifts);
+app.use('/users', users);
 
 // Catch all for path errors
 app.use((req, res) => {

@@ -1,5 +1,4 @@
 const async = require('async');
-const { CRITICAL_TIME } = require('../constants/applicationConstants');
 const { RANK } = require('../constants/usersConstants');
 
 const shiftsRepository = require('../repositories/shiftsRepository');
@@ -116,7 +115,7 @@ module.exports = {
         const sumUserShifts = results[1]; // User shifts are reported in seconds
 
         let criticalTime = new Date(shift.start);
-        criticalTime = new Date(criticalTime.getTime() - CRITICAL_TIME * 1000); // 1000 ms in one second
+        criticalTime = new Date(criticalTime.getTime() - shiftType.criticalTime * 1000); // 1000 ms in one second
 
         const isCritical = criticalTime < new Date();
         const userRank = user.rank;

@@ -20,5 +20,31 @@ function createTable(callback) {
 }
 
 module.exports = {
-  createTable: createTable
+  addCertification: (userId, cert, callback) => {
+    const { certification, authority, expiry, image } = cert;
+    const query = 'INSERT INTO "certificates" ("userId", "certification", "authority", "expiry", "image") ' +
+                  'VALUES ($1, $2, $3, $4, $5);';
+    const params = [ userId, certification, authority, expiry, image ];
+
+    dbAdaptor.executeQuery(query, params, callback);
+  },
+
+  createTable: createTable,
+
+  getCertifications: (userId, callback) => {
+    const query = 'SELECT "certification", "authority", "expiry", "image" ' +
+                  'FROM "certificates" ' +
+                  'WHERE "userId"=$1;';
+    const params = [ userId ];
+
+    dbAdaptor.executeQuery(query, params, callback);
+  },
+
+  removeCertification: (userId, certId, callback) => {
+    const query = 'DELETE FROM "certificates" ' +
+                  'WHERE "id"=$1 AND "userId"=$2;';
+    const params = [ certId, userId ];
+
+    dbAdaptor.executeQuery(query, params, callback);
+  }
 };

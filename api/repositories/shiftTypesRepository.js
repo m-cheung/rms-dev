@@ -19,7 +19,7 @@ module.exports = {
   createTable: createTable,
 
   getShiftTypeById: (typeId, callback) => {
-    const query = 'SELECT "name", "primaryReq", "secondaryReq", "rookieReq" ' +
+    const query = 'SELECT "name", "primaryReq", "secondaryReq", "rookieReq", "criticalTime", "ignoreCerts" ' +
                   'FROM "shiftTypes" ' +
                   'WHERE "id"=$1;';
     const params = [ typeId ];
@@ -30,7 +30,7 @@ module.exports = {
   },
 
   getShiftTypeByName: (typeName, callback) => {
-    const query = 'SELECT "name", "primaryReq", "secondaryReq", "rookieReq" ' +
+    const query = 'SELECT "name", "primaryReq", "secondaryReq", "rookieReq", "criticalTime", "ignoreCerts" ' +
                   'FROM "shiftTypes" ' +
                   'WHERE "name"=$1;';
     const params = [ typeName ];

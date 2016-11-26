@@ -2,11 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import * as profileActions from 'redux/modules/profile';
-import { isLoaded, load as loadProfile } from 'redux/modules/profile';
+import { isLoaded, load as loadProfile, loadCertificates } from 'redux/modules/profile';
 import { initializeWithKey } from 'redux-form';
 import { Alert, Col, Nav, NavItem, Row, Tab } from 'react-bootstrap';
 import { asyncConnect } from 'redux-async-connect';
-import {ProfileOverview} from 'components';
+import { ProfileOverview, ProfileCertificates } from 'components';
 
 @asyncConnect([{
   deferred: true,
@@ -15,9 +15,19 @@ import {ProfileOverview} from 'components';
       return dispatch(loadProfile());
     }
   }
+},
+{
+  deferred: true,
+  promise: ({store: {dispatch, getState}}) => {
+    if (!isLoaded(getState())) {
+      return dispatch(loadCertificates());
+    }
+  }
 }])
 @connect(
   state => ({
+    certificates: state.profile.certificates,
+    certificatesImageModal: state.profile.certificatesImageModal,
     profile: state.profile.data,
     error: state.profile.error,
     loading: state.profile.loading
@@ -25,6 +35,8 @@ import {ProfileOverview} from 'components';
   {...profileActions, initializeWithKey })
 export default class Profile extends Component {
   static propTypes = {
+    certificates: PropTypes.array,
+    certificatesImageModal: PropTypes.object,
     error: PropTypes.object,
     load: PropTypes.func.isRequired,
     loading: PropTypes.bool,
@@ -32,8 +44,7 @@ export default class Profile extends Component {
   };
 
   render() {
-    console.log(this.props);
-    const {error, loading, profile} = this.props; // error can go here
+    const {certificates, certificatesImageModal, error, loading, profile} = this.props;
     let refreshClassName = 'fa fa-refresh';
     if (loading) {
       refreshClassName += ' fa-spin';
@@ -63,13 +74,16 @@ export default class Profile extends Component {
             </Col>
             <Col sm={9}>
               {error &&
-                <Alert bsStyle="error">{error.message}</Alert>}
+                <Alert bsStyle="danger">
+                  <h4>Oh snap!</h4>
+                  {error.message}
+                </Alert>}
               <Tab.Content animation>
                 <Tab.Pane eventKey="Overview">
-                  <ProfileOverview user={profile}/>
+                  <ProfileOverview user={profile} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="Certifications">
-                  Certs
+                  <ProfileCertificates certificates={certificates} imageModal={certificatesImageModal}/>
                 </Tab.Pane>
                 <Tab.Pane eventKey="Shifts">
                   Shifts
