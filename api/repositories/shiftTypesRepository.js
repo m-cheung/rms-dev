@@ -4,10 +4,12 @@ function createTable(callback) {
   const query = 'CREATE TABLE IF NOT EXISTS "shiftTypes" (' +
     '"id" serial NOT NULL,' +
     '"name" character varying(255) NOT NULL,' +
-    '"primaryReq" int NOT NULL DEFAULT 0,' +
-    '"secondaryReq" int NOT NULL DEFAULT 0,' +
-    '"rookieReq" int NOT NULL DEFAULT 0,' +
-    'CONSTRAINT shiftTypes_pkey PRIMARY KEY (id)' +
+    '"primaryReq" int DEFAULT 0,' +
+    '"secondaryReq" int DEFAULT 0,' +
+    '"rookieReq" int DEFAULT 0,' +
+    '"criticalTime" integer NOT NULL, ' +
+    '"ignoreCerts" boolean NOT NULL DEFAULT false,' +
+    'CONSTRAINT "shiftTypes_pkey" PRIMARY KEY ("id")' +
   ');';
 
   dbAdaptor.executeQuery(query, null, callback);

@@ -11,10 +11,11 @@ function createTable(callback) {
     '"permissions" integer NOT NULL DEFAULT 0, ' +
     '"wantsNotification" boolean NOT NULL DEFAULT false,' +
     '"lastNotified" timestamp with time zone,' +
+    '"APIKey" character varying(31), ' +
     '"createdAt" timestamp with time zone NOT NULL,' +
     '"updatedAt" timestamp with time zone NOT NULL,' +
-    'CONSTRAINT users_pkey PRIMARY KEY (id),' +
-    'CONSTRAINT users_username_key UNIQUE (username)' +
+    'CONSTRAINT "users_pkey" PRIMARY KEY ("id"),' +
+    'CONSTRAINT "users_username_key" UNIQUE ("username")' +
   ');';
 
   dbAdaptor.executeQuery(query, null, callback);

@@ -14,22 +14,23 @@ function createTable(callback) {
     '"description" text,' +
     '"createdAt" timestamp with time zone NOT NULL DEFAULT now(),' +
     '"updatedAt" timestamp with time zone NOT NULL DEFAULT now(),' +
-    'CONSTRAINT shifts_pkey PRIMARY KEY (id),' +
+    'CONSTRAINT "shifts_pkey" PRIMARY KEY ("id"),' +
     'CONSTRAINT "primaryCheck" FOREIGN KEY ("primaryId") ' +
       'REFERENCES "users" (id) MATCH SIMPLE ' +
       'ON UPDATE NO ACTION ' +
-      'ON DELETE NO ACTION,' +
+      'ON DELETE SET NULL,' +
     'CONSTRAINT "rookieCheck" FOREIGN KEY ("rookieId") ' +
       'REFERENCES "users" (id) MATCH SIMPLE ' +
       'ON UPDATE NO ACTION ' +
-      'ON DELETE NO ACTION,' +
+      'ON DELETE SET NULL,' +
     'CONSTRAINT "secondaryCheck" FOREIGN KEY ("secondaryId") ' +
       'REFERENCES "users" (id) MATCH SIMPLE ' +
       'ON UPDATE NO ACTION ' +
+      'ON DELETE SET NULL,' +
+    'CONSTRAINT "shiftTypeCheck" FOREIGN KEY ("type") ' +
+      'REFERENCES "shiftTypes" (id) MATCH SIMPLE ' +
+      'ON UPDATE NO ACTION ' +
       'ON DELETE NO ACTION,' +
-    'CONSTRAINT "shiftTypeCheck" FOREIGN KEY (type) ' +
-      'REFERENCES public."shiftTypes" (id) MATCH SIMPLE ' +
-      'ON UPDATE NO ACTION ON DELETE NO ACTION,' +
     'CONSTRAINT "timeCheck" CHECK ("start" < "end")' +
   ');';
 

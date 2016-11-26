@@ -3,6 +3,7 @@ const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
 const GET_USER_FAIL = 'GET_USER_FAIL';
 
 const initialState = {
+  data: {},
   loading: false,
   loaded: false
 };

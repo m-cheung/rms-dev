@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as profileActions from 'redux/modules/profile';
 import { isLoaded, load as loadProfile } from 'redux/modules/profile';
 import { initializeWithKey } from 'redux-form';
-import { Col, Nav, NavItem, Row, Tab } from 'react-bootstrap';
+import { Alert, Col, Nav, NavItem, Row, Tab } from 'react-bootstrap';
 import { asyncConnect } from 'redux-async-connect';
 import {ProfileOverview} from 'components';
 
@@ -19,7 +19,6 @@ import {ProfileOverview} from 'components';
 @connect(
   state => ({
     profile: state.profile.data,
-    // editing: state.widgets.editing,
     error: state.profile.error,
     loading: state.profile.loading
   }),
@@ -27,17 +26,14 @@ import {ProfileOverview} from 'components';
 export default class Profile extends Component {
   static propTypes = {
     error: PropTypes.object,
-    // initializeWithKey: PropTypes.func.isRequired,
-    // editing: PropTypes.object.isRequired,
     load: PropTypes.func.isRequired,
     loading: PropTypes.bool,
-    // editStart: PropTypes.func.isRequired
     profile: PropTypes.object,
-    // success: PropTypes.object,
   };
 
   render() {
-    const {loading} = this.props; // error can go here
+    console.log(this.props);
+    const {error, loading, profile} = this.props; // error can go here
     let refreshClassName = 'fa fa-refresh';
     if (loading) {
       refreshClassName += ' fa-spin';
@@ -52,7 +48,7 @@ export default class Profile extends Component {
 
         <Tab.Container id="left-tabs-example" defaultActiveKey="Overview">
           <Row className="clearfix">
-            <Col sm={4}>
+            <Col sm={3}>
               <Nav bsStyle="pills" stacked>
                 <NavItem eventKey="Overview">
                   <span className="glyphicon glyphicon-file" aria-hidden="true"/> Overview
@@ -65,10 +61,12 @@ export default class Profile extends Component {
                 </NavItem>
               </Nav>
             </Col>
-            <Col sm={8}>
+            <Col sm={9}>
+              {error &&
+                <Alert bsStyle="error">{error.message}</Alert>}
               <Tab.Content animation>
                 <Tab.Pane eventKey="Overview">
-                  <ProfileOverview />
+                  <ProfileOverview user={profile}/>
                 </Tab.Pane>
                 <Tab.Pane eventKey="Certifications">
                   Certs

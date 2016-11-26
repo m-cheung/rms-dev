@@ -5,7 +5,7 @@ function createTable(callback) {
     '"id" serial NOT NULL,' +
     '"name" character varying(255) NOT NULL,' +
     '"value" character varying(255),' +
-    'CONSTRAINT config_pkey PRIMARY KEY (id)' +
+    'CONSTRAINT "config_pkey" PRIMARY KEY ("id")' +
   ');';
 
   dbAdaptor.executeQuery(query, null, callback);

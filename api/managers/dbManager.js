@@ -1,3 +1,4 @@
+import certificatesRepository from '../repositories/certificatesRepository';
 import configRepository from '../repositories/configRepository';
 import shiftsRepository from '../repositories/shiftsRepository';
 import shiftTypesRepository from '../repositories/shiftTypesRepository';
@@ -18,6 +19,9 @@ module.exports = {
       },
       (results, cb) => {
         shiftsRepository.createTable(cb);
+      },
+      (results, cb) => {
+        certificatesRepository.createTable(cb);
       }
     ], (err) => {
       if (err) {
