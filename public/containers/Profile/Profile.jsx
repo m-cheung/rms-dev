@@ -18,16 +18,12 @@ import { ProfileOverview, ProfileCertificates } from 'components';
 },
 {
   deferred: true,
-  promise: ({store: {dispatch, getState}}) => {
-    if (!isLoaded(getState())) {
-      return dispatch(loadCertificates());
-    }
+  promise: ({store: {dispatch}}) => {
+    return dispatch(loadCertificates());
   }
 }])
 @connect(
   state => ({
-    certificates: state.profile.certificates,
-    certificatesImageModal: state.profile.certificatesImageModal,
     profile: state.profile.data,
     error: state.profile.error,
     loading: state.profile.loading
@@ -35,8 +31,6 @@ import { ProfileOverview, ProfileCertificates } from 'components';
   {...profileActions, initializeWithKey })
 export default class Profile extends Component {
   static propTypes = {
-    certificates: PropTypes.array,
-    certificatesImageModal: PropTypes.object,
     error: PropTypes.object,
     load: PropTypes.func.isRequired,
     loading: PropTypes.bool,
@@ -44,7 +38,7 @@ export default class Profile extends Component {
   };
 
   render() {
-    const {certificates, certificatesImageModal, error, loading, profile} = this.props;
+    const {error, loading, profile} = this.props;
     let refreshClassName = 'fa fa-refresh';
     if (loading) {
       refreshClassName += ' fa-spin';
@@ -83,7 +77,7 @@ export default class Profile extends Component {
                   <ProfileOverview user={profile} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="Certifications">
-                  <ProfileCertificates certificates={certificates} imageModal={certificatesImageModal}/>
+                  <ProfileCertificates />
                 </Tab.Pane>
                 <Tab.Pane eventKey="Shifts">
                   Shifts

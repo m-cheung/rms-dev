@@ -5,7 +5,6 @@ const TAKE_SHIFT = 'TAKE_SHIFT';
 const TAKE_SHIFT_SUCCESS = 'TAKE_SHIFT_SUCCESS';
 const TAKE_SHIFT_FAIL = 'TAKE_SHIFT_FAIL';
 
-
 const initialState = {
   error: null,
   loading: false,

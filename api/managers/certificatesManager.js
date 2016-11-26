@@ -28,7 +28,9 @@ module.exports = {
       } else {
         // Convert the byte[] to Base64 for transport
         result.map((cert) => {
-          cert.image = cert.image.toString('base64');
+          if (cert.image !== null) {
+            cert.image = cert.image.toString('base64');
+          }
           return cert;
         });
 
