@@ -7,8 +7,7 @@ const RANK = {
   3: 'Rookie'
 };
 
-export default
-class ProfileOverview extends Component {
+export default class ProfileOverview extends Component {
   static propTypes = {
     user: PropTypes.object
   }
