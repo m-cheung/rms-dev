@@ -3,6 +3,7 @@ import {IndexRoute, Route} from 'react-router';
 import { isLoaded as isAuthLoaded, load as loadAuth } from 'redux/modules/auth';
 import {
     App,
+    Admin,
     Home,
     Shifts,
     Widgets,
@@ -61,6 +62,7 @@ export default (store) => {
       { /* Routes requiring login */ }
       <Route onEnter={requireLogin}>
         <Route path="loginSuccess" component={LoginSuccess}/>
+        <Route path="admin" component={Admin}/>
         <Route path="profile" components={Profile}/>
         <Route path="shifts" component={Shifts}/>
       </Route>

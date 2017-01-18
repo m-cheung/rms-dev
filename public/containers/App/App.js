@@ -86,30 +86,34 @@ export default class App extends Component {
               <LinkContainer to="/shifts">
                 <NavItem eventKey={1}>Shifts</NavItem>
               </LinkContainer>}
+              {user &&
+              <LinkContainer to="/admin">
+                <NavItem eventKey={2}>Admin Options</NavItem>
+              </LinkContainer>}
               <LinkContainer to="/widgets">
-                <NavItem eventKey={2}>Widgets</NavItem>
+                <NavItem eventKey={3}>Widgets</NavItem>
               </LinkContainer>
               <LinkContainer to="/survey">
-                <NavItem eventKey={3}>Survey</NavItem>
+                <NavItem eventKey={4}>Survey</NavItem>
               </LinkContainer>
               <LinkContainer to="/about">
-                <NavItem eventKey={4}>About Us</NavItem>
+                <NavItem eventKey={5}>About Us</NavItem>
               </LinkContainer>
             </Nav>
             <Nav navbar pullRight>
               {!user &&
-              <NavItem eventKey={5} className="login-link" onClick={this.handleLogin}>
+              <NavItem eventKey={6} className="login-link" onClick={this.handleLogin}>
                 Login
               </NavItem>}
               {user &&
-              <NavDropdown eventKey={6} title={'Logged in as ' + user.firstName + ' ' + user.lastName} id="user-dropdown">
+              <NavDropdown eventKey={7} title={'Logged in as ' + user.firstName + ' ' + user.lastName} id="user-dropdown">
                 <LinkContainer to="/profile">
-                  <NavItem eventKey={6.1} className="profile-link">
+                  <NavItem eventKey={7.1} className="profile-link">
                     Profile
                   </NavItem>
                 </LinkContainer>
                 <LinkContainer to="/logout">
-                  <NavItem eventKey={6.2} className="logout-link" onClick={this.handleLogout}>
+                  <NavItem eventKey={7.2} className="logout-link" onClick={this.handleLogout}>
                     Logout
                   </NavItem>
                 </LinkContainer>
@@ -124,10 +128,7 @@ export default class App extends Component {
         <InfoBar/>
 
         <div className="well text-center">
-          Have questions? Ask for help <a
-          href="https://github.com/erikras/react-redux-universal-hot-example/issues"
-          target="_blank">on Github</a> or in the <a
-          href="https://discord.gg/0ZcbPKXt5bZZb1Ko" target="_blank">#react-redux-universal</a> Discord channel.
+          A division of FEDS at the University of Waterloo
         </div>
       </div>
     );

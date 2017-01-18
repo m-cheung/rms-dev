@@ -1,4 +1,5 @@
 export App from './App/App';
+export Admin from './Admin/Admin';
 export Home from './Home/Home';
 export Shifts from './Shifts/Shifts';
 export Profile from './Profile/Profile';

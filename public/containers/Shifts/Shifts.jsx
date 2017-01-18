@@ -76,7 +76,6 @@ export default class Shifts extends Component {
           {' '}
           {success.message}
         </div>}
-        {shifts && shifts.length &&
         <Table className="table striped table-condensed">
           <thead>
             <tr>
@@ -90,6 +89,7 @@ export default class Shifts extends Component {
               <th className={styles.idCol}>Type</th>
             </tr>
           </thead>
+          {shifts && shifts.length !== 0 &&
           <tbody>
             {
               shifts.map((shift, index) =>
@@ -105,8 +105,8 @@ export default class Shifts extends Component {
                     <td><Button onClick={takeShift.bind(this, shift.id)}>Take Shift</Button></td>
                   </tr>)
             }
-          </tbody>
-        </Table>}
+          </tbody>}
+        </Table>
       </div>
     );
   }
