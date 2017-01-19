@@ -2,10 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import * as adminActions from 'redux/modules/admin';
-// import { isLoaded, load as loadProfile, loadCertificates } from 'redux/modules/profile';
 import { initializeWithKey } from 'redux-form';
 import { Alert, Col, Nav, NavItem, Row, Tab } from 'react-bootstrap';
-// import { asyncConnect } from 'redux-async-connect';
+import { Responders } from 'components';
 
 @connect(
   state => ({
@@ -61,14 +60,17 @@ export default class Admin extends Component {
                   {error.message}
                 </Alert>}
               <Tab.Content animation>
-                <Tab.Pane eventKey="Overview">
-                  a
+                <Tab.Pane eventKey="NewShift">
+                  New Shift
                 </Tab.Pane>
-                <Tab.Pane eventKey="Certifications">
-                  a
+                <Tab.Pane eventKey="ShiftTypes">
+                  Shift Type
                 </Tab.Pane>
-                <Tab.Pane eventKey="Shifts">
-                  Shifts
+                <Tab.Pane eventKey="Responders">
+                  <Responders/>
+                </Tab.Pane>
+                <Tab.Pane eventKey="EoT">
+                  EoT
                 </Tab.Pane>
               </Tab.Content>
             </Col>

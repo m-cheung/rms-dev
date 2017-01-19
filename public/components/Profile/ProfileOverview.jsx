@@ -24,6 +24,7 @@ export default class ProfileOverview extends Component {
           <h1>{`${user.firstName} ${user.lastName} (${RANK[user.rank]})`}</h1>
           <Jumbotron>
             Certifications:
+
           </Jumbotron>
         </div>
       );

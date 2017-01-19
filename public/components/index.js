@@ -14,3 +14,4 @@ export WidgetForm from './WidgetForm/WidgetForm';
 
 export ProfileCertificates from './Profile/ProfileCertificates';
 export ProfileOverview from './Profile/ProfileOverview';
+export Responders from './Admin/Responders';

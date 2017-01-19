@@ -25,6 +25,12 @@ function createTable(callback) {
 module.exports = {
   createTable: createTable,
 
+  getAllUsers: (callback) => {
+    const query = 'SELECT * ' +
+                  'FROM "users";';
+    dbAdaptor.executeQuery(query, null, callback);
+  },
+
   getUser: (username, callback) => {
     const query = 'SELECT "id", "username", "firstName", "lastName", "active", "rank", "permissions", "wantsNotification" ' +
                   'FROM "users" WHERE "username"=$1;';
