@@ -1,8 +1,8 @@
 # Real-Magic-Scheduler
 
 [![Build Status](https://travis-ci.com/m-cheung/rms-dev.svg?token=bj3Z4rhsTyopCgPz2GJj&branch=master)](https://travis-ci.com/m-cheung/rms-dev)
-[![Staging Branch on Heroku](https://img.shields.io/badge/demo-heroku-brightgreen.svg?style=flat-square)](https://scheduler-staging.herokuapp.com/)
-[![Dev Branch on Heroku](https://img.shields.io/badge/demo-heroku-brightgreen.svg?style=flat-square)](https://scheduler-devel.herokuapp.com/)
+[![Staging Branch on Heroku](https://img.shields.io/badge/Heroku-Staging-brightgreen.svg?style=flat-square)](https://scheduler-staging.herokuapp.com/)
+[![Dev Branch on Heroku](https://img.shields.io/badge/Heroku-Dev-orange.svg?style=flat-square)](https://scheduler-devel.herokuapp.com/)
 <!-- [![Dependency Status](https://david-dm.org/erikras/react-redux-universal-hot-example.svg?style=flat-square)](https://david-dm.org/erikras/react-redux-universal-hot-example)
 [![devDependency Status](https://david-dm.org/erikras/react-redux-universal-hot-example/dev-status.svg?style=flat-square)](https://david-dm.org/erikras/react-redux-universal-hot-example#info=devDependencies)
 -->
@@ -43,8 +43,8 @@ Prerequisites:
 * PostgreSQL (9.5+)
 
 Please make the required changes to /public/config in the following areas:
-* host/apiHost: <You can keep as localhost or change it to your computers IP/name>
-* port/apiPort: <Specify another port if the default ports conflict with something else>
+* host/apiHost: You can keep as localhost or change it to your computers IP/name
+* port/apiPort: Specify another port if the default ports conflict with something else
 * cas.base_url/cas.version: Defaults to the University of Waterloo's CAS
 * database: Please update the credentials as required
 * signing_key: No changes should be needed for development purposes. This is the key used for JWT signing
@@ -258,7 +258,3 @@ I am more than happy to accept external contributions to the project in the form
 
 If you would like to submit a pull request, please make an effort to follow the guide in [CONTRIBUTING.md](CONTRIBUTING.md). 
  
----
-Thanks for checking this out.
-
-– Erik Rasmussen, [@erikras](https://twitter.com/erikras)
