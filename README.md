@@ -1,17 +1,18 @@
-# React Redux Universal Hot Example
+# Real-Magic-Scheduler
 
-[![build status](https://img.shields.io/travis/erikras/react-redux-universal-hot-example/master.svg?style=flat-square)](https://travis-ci.org/erikras/react-redux-universal-hot-example)
-[![Dependency Status](https://david-dm.org/erikras/react-redux-universal-hot-example.svg?style=flat-square)](https://david-dm.org/erikras/react-redux-universal-hot-example)
+[![Build Status](https://travis-ci.com/m-cheung/rms-dev.svg?token=bj3Z4rhsTyopCgPz2GJj&branch=master)](https://travis-ci.com/m-cheung/rms-dev)
+[![Staging Branch on Heroku](https://img.shields.io/badge/demo-heroku-brightgreen.svg?style=flat-square)](https://scheduler-staging.herokuapp.com/)
+[![Dev Branch on Heroku](https://img.shields.io/badge/demo-heroku-brightgreen.svg?style=flat-square)](https://scheduler-devel.herokuapp.com/)
+<!-- [![Dependency Status](https://david-dm.org/erikras/react-redux-universal-hot-example.svg?style=flat-square)](https://david-dm.org/erikras/react-redux-universal-hot-example)
 [![devDependency Status](https://david-dm.org/erikras/react-redux-universal-hot-example/dev-status.svg?style=flat-square)](https://david-dm.org/erikras/react-redux-universal-hot-example#info=devDependencies)
-[![react-redux-universal channel on discord](https://img.shields.io/badge/discord-react--redux--universal%40reactiflux-brightgreen.svg?style=flat-square)](https://discord.gg/0ZcbPKXt5bZZb1Ko)
-[![Demo on Heroku](https://img.shields.io/badge/demo-heroku-brightgreen.svg?style=flat-square)](https://react-redux.herokuapp.com)
-[![PayPal donate button](https://img.shields.io/badge/donate-paypal-brightgreen.svg?style=flat-square)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E2LK57ZQ9YRMN)
-
+-->
 ---
 
 ## About
 
-This is a starter boilerplate app I've put together using the following technologies:
+The original RMS is a web based application written in Ruby on Rails. This project is the next iteration of RMS written in Node.js. The application is used by the University of Waterloo's Campus Response Team (http://www.feds.ca/crt/) to schedule shifts for responders. Administrators are allowed to manage shifts through RMS and responders are allowed to commit to shifts, given that they meet the required criteria.
+
+This application is based off the start boilerplate by [@erikras] and uses the following technologies:
 
 * ~~Isomorphic~~ [Universal](https://medium.com/@mjackson/universal-javascript-4761051b7ae9) rendering
 * Both client and server make calls to load data from separate API server
@@ -35,16 +36,27 @@ This is a starter boilerplate app I've put together using the following technolo
 * [webpack-isomorphic-tools](https://github.com/halt-hammerzeit/webpack-isomorphic-tools) to allow require() work for statics both on client and server
 * [mocha](https://mochajs.org/) to allow writing unit tests for the project.
 
-I cobbled this together from a wide variety of similar "starter" repositories. As I post this in June 2015, all of these libraries are right at the bleeding edge of web development. They may fall out of fashion as quickly as they have come into it, but I personally believe that this stack is the future of web development and will survive for several years. I'm building my new projects like this, and I recommend that you do, too.
-
 ## Installation
 
+Prerequisites:
+* Node.js (Application is developed with 6.9.5 but should work on the latest version as well)
+* PostgreSQL (9.5+)
+
+Please make the required changes to /public/config in the following areas:
+* host/apiHost: <You can keep as localhost or change it to your computers IP/name>
+* port/apiPort: <Specify another port if the default ports conflict with something else>
+* cas.base_url/cas.version: Defaults to the University of Waterloo's CAS
+* database: Please update the credentials as required
+* signing_key: No changes should be needed for development purposes. This is the key used for JWT signing
+
+Execute the following command in the root directory of the project to install all required dependencies:
 ```bash
 npm install
 ```
 
 ## Running Dev Server
 
+For development purposes, run the following command:
 ```bash
 npm run dev
 ```
@@ -74,16 +86,14 @@ npm run start
 
 ## Demo
 
-A demonstration of this app can be seen [running on heroku](https://react-redux.herokuapp.com), which is a deployment of the [heroku branch](https://github.com/erikras/react-redux-universal-hot-example/tree/heroku).
+A demonstration of this development branch can be seen [running on heroku](https://scheduler-devel.herokuapp.com/), which is a deployment of the ...
+The staging branch can be seen [running on heroku](https://scheduler-staging.herokuapp.com/), which is a deployment of the [heroku branch](https://github.com/m-cheung/rms-dev/tree/staging).
 
 ## Documentation
 
-* [Exploring the Demo App](docs/ExploringTheDemoApp/ExploringTheDemoApp.md) is a guide that can be used before you install the kit.
 * [Installing the Kit](docs/InstallingTheKit/InstallingTheKit.md) guides you through installation and running the development server locally.
 * [Adding Text to the Home Page](docs/AddingToHomePage/AddingToHomePage.md) guides you through adding "Hello, World!" to the home page.
 * [Adding A Page](docs/AddingAPage/AddingAPage.md) guides you through adding a new page.
-* [React Tutorial - Converting Reflux to Redux](http://engineering.wework.com/process/2015/10/01/react-reflux-to-redux/), by Matt Star
-   If you are the kind of person that learns best by following along a tutorial, I can recommend Matt Star's overview and examples.
 
 
 ## Explanation
@@ -127,7 +137,7 @@ isolate concerns within a Redux application (aka [Ducks](https://github.com/erik
 
 #### API Server
 
-This is where the meat of your server-side application goes. It doesn't have to be implemented in Node or Express at all. This is where you connect to your database and provide authentication and session management. In this example, it's just spitting out some json with the current time stamp.
+The documentation... to be provided!
 
 #### Getting data and actions into components
 
@@ -225,6 +235,8 @@ To keep watching your test suites that you are working on, just set `singleRun: 
 
 ## Deployment on Heroku
 
+This section is outdated. Will be updated in a bit!
+
 To get this project to work on Heroku, you need to:
 
 1. Remove the `"PORT": 8080` line from the `betterScripts` / `start-prod` section of `package.json`.
@@ -235,16 +247,10 @@ To get this project to work on Heroku, you need to:
 
 The first deploy might take a while, but after that your `node_modules` dir should be cached.
 
-## FAQ
-
-This project moves fast and has an active community, so if you have a question that is not answered below please visit our [Discord channel](https://discord.gg/0ZcbPKXt5bZZb1Ko) or file an issue.
-
-
 ## Roadmap 
 
-Although this isn't a library, we recently started versioning to make it easier to track breaking changes and emerging best practices. 
-
-* [Inline Styles](docs/InlineStyles.md) - CSS is dead
+* Implemented all core features from original RMS
+* And... we will go from there :)
 
 ## Contributing
 
