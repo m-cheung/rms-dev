@@ -1,5 +1,7 @@
 # Real-Magic-Scheduler
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/m-cheung/rms-dev.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.com/m-cheung/rms-dev.svg?token=bj3Z4rhsTyopCgPz2GJj&branch=master)](https://travis-ci.com/m-cheung/rms-dev)
 [![Staging Branch on Heroku](https://img.shields.io/badge/Heroku-Staging-brightgreen.svg?style=flat-square)](https://scheduler-staging.herokuapp.com/)
 [![Dev Branch on Heroku](https://img.shields.io/badge/Heroku-Dev-orange.svg?style=flat-square)](https://scheduler-devel.herokuapp.com/)
